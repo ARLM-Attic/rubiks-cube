@@ -1,0 +1,1 @@
+C:\work\RubikCube\WindowSystem0.5.1\InputEventSystem\Content\obj\x86\Release\ResolveAssemblyReference.cache

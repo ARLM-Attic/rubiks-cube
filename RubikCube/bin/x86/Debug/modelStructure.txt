@@ -1,0 +1,138 @@
+Model Bone Information
+----------------------
+- Name : blend_root
+ Index: 0
+	- Name : Cube.UF
+	 Index: 1
+	- Name : Cube.UFL
+	 Index: 2
+	- Name : Cube.LF
+	 Index: 3
+	- Name : Cube.F
+	 Index: 4
+	- Name : Cube.RF
+	 Index: 5
+	- Name : Cube.DFR
+	 Index: 6
+	- Name : Cube.DF
+	 Index: 7
+	- Name : Cube.DLF
+	 Index: 8
+	- Name : Cube.DL
+	 Index: 9
+	- Name : Cube.D
+	 Index: 10
+	- Name : Cube.DR
+	 Index: 11
+	- Name : Cube.R
+	 Index: 12
+	- Name : Cube.L
+	 Index: 13
+	- Name : Cube.UL
+	 Index: 14
+	- Name : Cube.U
+	 Index: 15
+	- Name : Cube.UR
+	 Index: 16
+	- Name : Cube.UBR
+	 Index: 17
+	- Name : Cube.UB
+	 Index: 18
+	- Name : Cube.ULB
+	 Index: 19
+	- Name : Cube.LB
+	 Index: 20
+	- Name : Cube.B
+	 Index: 21
+	- Name : Cube.RB
+	 Index: 22
+	- Name : Cube.DRB
+	 Index: 23
+	- Name : Cube.DB
+	 Index: 24
+	- Name : Cube.DBL
+	 Index: 25
+	- Name : Cube.URF
+	 Index: 26
+
+
+Model Mesh Information
+----------------------
+- ID : 0
+ Name: Cube.UF
+ Bone: Cube.UF (1)
+- ID : 1
+ Name: Cube.UFL
+ Bone: Cube.UFL (2)
+- ID : 2
+ Name: Cube.LF
+ Bone: Cube.LF (3)
+- ID : 3
+ Name: Cube.F
+ Bone: Cube.F (4)
+- ID : 4
+ Name: Cube.RF
+ Bone: Cube.RF (5)
+- ID : 5
+ Name: Cube.DFR
+ Bone: Cube.DFR (6)
+- ID : 6
+ Name: Cube.DF
+ Bone: Cube.DF (7)
+- ID : 7
+ Name: Cube.DLF
+ Bone: Cube.DLF (8)
+- ID : 8
+ Name: Cube.DL
+ Bone: Cube.DL (9)
+- ID : 9
+ Name: Cube.D
+ Bone: Cube.D (10)
+- ID : 10
+ Name: Cube.DR
+ Bone: Cube.DR (11)
+- ID : 11
+ Name: Cube.R
+ Bone: Cube.R (12)
+- ID : 12
+ Name: Cube.L
+ Bone: Cube.L (13)
+- ID : 13
+ Name: Cube.UL
+ Bone: Cube.UL (14)
+- ID : 14
+ Name: Cube.U
+ Bone: Cube.U (15)
+- ID : 15
+ Name: Cube.UR
+ Bone: Cube.UR (16)
+- ID : 16
+ Name: Cube.UBR
+ Bone: Cube.UBR (17)
+- ID : 17
+ Name: Cube.UB
+ Bone: Cube.UB (18)
+- ID : 18
+ Name: Cube.ULB
+ Bone: Cube.ULB (19)
+- ID : 19
+ Name: Cube.LB
+ Bone: Cube.LB (20)
+- ID : 20
+ Name: Cube.B
+ Bone: Cube.B (21)
+- ID : 21
+ Name: Cube.RB
+ Bone: Cube.RB (22)
+- ID : 22
+ Name: Cube.DRB
+ Bone: Cube.DRB (23)
+- ID : 23
+ Name: Cube.DB
+ Bone: Cube.DB (24)
+- ID : 24
+ Name: Cube.DBL
+ Bone: Cube.DBL (25)
+- ID : 25
+ Name: Cube.URF
+ Bone: Cube.URF (26)

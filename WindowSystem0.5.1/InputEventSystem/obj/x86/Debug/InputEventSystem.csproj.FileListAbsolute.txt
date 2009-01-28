@@ -1,0 +1,6 @@
+C:\work\RubikCube\WindowSystem0.5.1\InputEventSystem\bin\x86\Debug\InputEventSystem.dll
+C:\work\RubikCube\WindowSystem0.5.1\InputEventSystem\bin\x86\Debug\InputEventSystem.pdb
+C:\work\RubikCube\WindowSystem0.5.1\InputEventSystem\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\work\RubikCube\WindowSystem0.5.1\InputEventSystem\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\work\RubikCube\WindowSystem0.5.1\InputEventSystem\obj\x86\Debug\InputEventSystem.dll
+C:\work\RubikCube\WindowSystem0.5.1\InputEventSystem\obj\x86\Debug\InputEventSystem.pdb

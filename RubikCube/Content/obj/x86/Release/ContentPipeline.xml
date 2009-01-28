@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Pipeline="Microsoft.Xna.Framework.Content.Pipeline">
+  <Asset Type="Pipeline:BuildItemCollection">
+    <Item>
+      <Source>Fonts\GameFont.spritefont</Source>
+      <Name>Fonts\GameFont</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\work\RubikCube\RubikCube\bin\x86\Release\Content\Fonts\GameFont.xnb</Output>
+      <Time>2009-01-04T10:33:25.233-05:00</Time>
+    </Item>
+    <Item>
+      <Source>Fonts\DefaultFont.spritefont</Source>
+      <Name>Fonts\DefaultFont</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\work\RubikCube\RubikCube\bin\x86\Release\Content\Fonts\DefaultFont.xnb</Output>
+      <Time>2009-01-04T11:26:04.175-05:00</Time>
+    </Item>
+    <Item>
+      <Source>Fonts\DefaultHeading.spritefont</Source>
+      <Name>Fonts\DefaultHeading</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\work\RubikCube\RubikCube\bin\x86\Release\Content\Fonts\DefaultHeading.xnb</Output>
+      <Time>2009-01-04T11:26:04.177-05:00</Time>
+    </Item>
+    <Item>
+      <Source>solidred.png</Source>
+      <Name>solidred</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\work\RubikCube\RubikCube\bin\x86\Release\Content\solidred.xnb</Output>
+      <Time>2009-01-04T10:39:46.374-05:00</Time>
+    </Item>
+    <Item>
+      <Source>Textures\DefaultStyle.png</Source>
+      <Name>Textures\DefaultStyle</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\work\RubikCube\RubikCube\bin\x86\Release\Content\Textures\DefaultStyle.xnb</Output>
+      <Time>2009-01-04T11:26:04.18-05:00</Time>
+    </Item>
+    <Item>
+      <Source>rubik_cube-XNA.fbx</Source>
+      <Name>rubik_cube-XNA</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\work\RubikCube\RubikCube\bin\x86\Release\Content\rubik_cube-XNA.xnb</Output>
+      <Time>2009-01-04T20:23:28.569-05:00</Time>
+      <Dependency>
+        <Key>obj\x86\Release\rubik_cube-XNA_0.xml</Key>
+        <Value>2009-01-19T21:55:29.7396-05:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>rubik_cube-XNA.fbx</Source>
+      <Importer>FbxImporter</Importer>
+      <Options>IntermediateFile, DontCacheImportedData</Options>
+      <Output>obj\x86\Release\rubik_cube-XNA_0.xml</Output>
+      <Time>2009-01-04T20:23:28.569-05:00</Time>
+    </Item>
+    <BuildSuccessful>true</BuildSuccessful>
+    <Settings>
+      <TargetPlatform>Windows</TargetPlatform>
+      <BuildConfiguration>Release</BuildConfiguration>
+      <CompressContent>true</CompressContent>
+      <RootDirectory>C:\work\RubikCube\RubikCube\Content\</RootDirectory>
+      <LoggerRootDirectory>C:\work\RubikCube\RubikCube\</LoggerRootDirectory>
+      <IntermediateDirectory>C:\work\RubikCube\RubikCube\Content\obj\x86\Release\</IntermediateDirectory>
+      <OutputDirectory>C:\work\RubikCube\RubikCube\bin\x86\Release\Content\</OutputDirectory>
+    </Settings>
+    <Assemblies>
+      <Assembly>
+        <Key>C:\Program Files\Microsoft XNA\XNA Game Studio\v3.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.XImporter.dll</Key>
+        <Value>2008-10-10T18:42:32-04:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files\Microsoft XNA\XNA Game Studio\v3.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.TextureImporter.dll</Key>
+        <Value>2008-10-10T18:43:28-04:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files\Microsoft XNA\XNA Game Studio\v3.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.FBXImporter.dll</Key>
+        <Value>2008-10-10T18:43:18-04:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files\Microsoft XNA\XNA Game Studio\v3.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.EffectImporter.dll</Key>
+        <Value>2008-10-10T18:48:18-04:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files\Microsoft XNA\XNA Game Studio\v3.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.AudioImporters.dll</Key>
+        <Value>2008-10-10T18:48:50-04:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Windows\assembly\GAC_32\Microsoft.Xna.Framework.Content.Pipeline\3.0.0.0__6d5c3888ef60e27d\Microsoft.Xna.Framework.Content.Pipeline.dll</Key>
+        <Value>2008-12-13T18:43:45.307-05:00</Value>
+      </Assembly>
+    </Assemblies>
+  </Asset>
+</XnaContent>
