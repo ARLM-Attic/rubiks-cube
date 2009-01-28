@@ -1,6 +1,0 @@
-C:\work\RubikCube\XNALib\bin\x86\Release\XNALib.dll
-C:\work\RubikCube\XNALib\bin\x86\Release\XNALib.pdb
-C:\work\RubikCube\XNALib\obj\x86\Release\ResolveAssemblyReference.cache
-C:\work\RubikCube\XNALib\obj\x86\Release\Microsoft.Xna.Framework.RuntimeProfile.txt
-C:\work\RubikCube\XNALib\obj\x86\Release\XNALib.dll
-C:\work\RubikCube\XNALib\obj\x86\Release\XNALib.pdb

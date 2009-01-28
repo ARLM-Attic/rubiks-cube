@@ -12,6 +12,26 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InputEventSystem", "WindowSystem0.5.1\InputEventSystem\InputEventSystem.csproj", "{EB30C454-C629-4B9C-B146-CB18A9F46D45}"
 EndProject
 Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 5
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://tfs09.codeplex.com/
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = RubikCube\\RubiksCube.csproj
+		SccProjectName1 = RubikCube
+		SccLocalPath1 = RubikCube
+		SccProjectUniqueName2 = XNALib\\XNALib.csproj
+		SccProjectName2 = XNALib
+		SccLocalPath2 = XNALib
+		SccProjectUniqueName3 = WindowSystem0.5.1\\WindowSystem\\WindowSystem.csproj
+		SccProjectTopLevelParentUniqueName3 = RubiksCube.sln
+		SccProjectName3 = WindowSystem0.5.1/WindowSystem
+		SccLocalPath3 = WindowSystem0.5.1\\WindowSystem
+		SccProjectUniqueName4 = WindowSystem0.5.1\\InputEventSystem\\InputEventSystem.csproj
+		SccProjectTopLevelParentUniqueName4 = RubiksCube.sln
+		SccProjectName4 = WindowSystem0.5.1/InputEventSystem
+		SccLocalPath4 = WindowSystem0.5.1\\InputEventSystem
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
 		Release|x86 = Release|x86

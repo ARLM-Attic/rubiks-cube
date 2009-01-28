@@ -1,6 +1,0 @@
-Content\rubik_cube-XNA.xnb
-Content\Fonts\GameFont.xnb
-Content\solidred.xnb
-Content\Fonts\DefaultFont.xnb
-Content\Fonts\DefaultHeading.xnb
-Content\Textures\DefaultStyle.xnb

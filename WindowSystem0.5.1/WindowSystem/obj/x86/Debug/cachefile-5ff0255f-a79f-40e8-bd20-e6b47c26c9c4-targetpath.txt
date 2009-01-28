@@ -1,3 +1,0 @@
-Content\Textures\DefaultStyle.xnb
-Content\Fonts\DefaultFont.xnb
-Content\Fonts\DefaultHeading.xnb
