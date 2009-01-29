@@ -21,6 +21,7 @@ namespace RubiksCube
     class CubeConfiguration
     {
         private Dictionary<CubicleKey, Cubicle> _cubeConfiguration;
+        private List<ModelMesh> _nonCubeMeshs;
         private static string[] Faces = new string[] { "F", "B", "U", "D", "L", "R" };
 
         public Cubicle this[CubicleKey key]{
@@ -48,7 +49,9 @@ namespace RubiksCube
             {
                 if (!mesh.Name.StartsWith("Cube."))
                 {
-                    Debug.Assert(false);
+                    //Debug.Assert(false);
+                    if (_nonCubeMeshs == null) _nonCubeMeshs = new List<ModelMesh>();
+                    _nonCubeMeshs.Add(mesh);
                 }
                 else
                 {
@@ -304,6 +307,23 @@ namespace RubiksCube
                 }
                 mesh.Draw();
                 meshIndex++;
+            }
+
+            if (_nonCubeMeshs != null)
+            {
+                foreach (ModelMesh mesh in _nonCubeMeshs)
+                {
+                    Matrix transform = modelTransforms[mesh.ParentBone.Index] * worldMatrix;
+                    foreach (BasicEffect effect in mesh.Effects)
+                    {
+                        effect.EnableDefaultLighting();
+                        effect.PreferPerPixelLighting = true;
+                        effect.World = transform;
+                        effect.View = viewMatrix;
+                        effect.Projection = projectionMatrix;
+                    }
+                    mesh.Draw();
+                }
             }
         }
 
