@@ -1,1 +1,0 @@
-C:\work\RubikCube\XNALib\Content\obj\x86\Debug\ResolveAssemblyReference.cache
