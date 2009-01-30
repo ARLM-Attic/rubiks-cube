@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RubiksCube", "RubikCube\RubiksCube.csproj", "{A795AB3D-678A-4ABD-8571-605F69680809}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XNALib", "XNALib\XNALib.csproj", "{529AFC57-0A0B-4DAA-B83D-BC0CDEA4F17F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Library", "Library", "{5E9C34B4-9B15-4980-AF31-300B721D24A1}"
@@ -11,36 +9,42 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Library", "Library", "{5E9C
 		Library\WindowSystem.dll = Library\WindowSystem.dll
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RubiksCube", "RubiksCube\RubiksCube.csproj", "{A795AB3D-678A-4ABD-8571-605F69680809}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 3
+		SccNumberOfProjects = 4
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs09.codeplex.com/
 		SccLocalPath0 = .
-		SccProjectUniqueName1 = RubikCube\\RubiksCube.csproj
-		SccProjectName1 = RubikCube
-		SccLocalPath1 = RubikCube
-		SccProjectUniqueName2 = XNALib\\XNALib.csproj
-		SccProjectName2 = XNALib
-		SccLocalPath2 = XNALib
+		SccProjectUniqueName1 = XNALib\\XNALib.csproj
+		SccProjectName1 = XNALib
+		SccLocalPath1 = XNALib
+		SccProjectUniqueName2 = RubiksCube\\RubiksCube.csproj
+		SccProjectName2 = RubiksCube
+		SccLocalPath2 = RubiksCube
+		SccProjectUniqueName3 = RubiksCube\\Content\\Content.contentproj
+		SccProjectTopLevelParentUniqueName3 = RubiksCube\\RubiksCube.csproj
+		SccProjectName3 = RubiksCube/Content
+		SccLocalPath3 = RubiksCube\\Content
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A795AB3D-678A-4ABD-8571-605F69680809}.Debug|x86.ActiveCfg = Debug|x86
-		{A795AB3D-678A-4ABD-8571-605F69680809}.Debug|x86.Build.0 = Debug|x86
-		{A795AB3D-678A-4ABD-8571-605F69680809}.Release|x86.ActiveCfg = Release|x86
-		{A795AB3D-678A-4ABD-8571-605F69680809}.Release|x86.Build.0 = Release|x86
 		{529AFC57-0A0B-4DAA-B83D-BC0CDEA4F17F}.Debug|x86.ActiveCfg = Debug|x86
 		{529AFC57-0A0B-4DAA-B83D-BC0CDEA4F17F}.Debug|x86.Build.0 = Debug|x86
 		{529AFC57-0A0B-4DAA-B83D-BC0CDEA4F17F}.Release|x86.ActiveCfg = Release|x86
 		{529AFC57-0A0B-4DAA-B83D-BC0CDEA4F17F}.Release|x86.Build.0 = Release|x86
-		{1C1AAE43-92AB-4972-93EC-4D6A8A648830}.Debug|x86.ActiveCfg = Debug|x86
-		{1C1AAE43-92AB-4972-93EC-4D6A8A648830}.Release|x86.ActiveCfg = Release|x86
 		{A6079D41-0CE0-4121-99DA-FA9579086482}.Debug|x86.ActiveCfg = Debug|x86
 		{A6079D41-0CE0-4121-99DA-FA9579086482}.Release|x86.ActiveCfg = Release|x86
+		{A795AB3D-678A-4ABD-8571-605F69680809}.Debug|x86.ActiveCfg = Debug|x86
+		{A795AB3D-678A-4ABD-8571-605F69680809}.Debug|x86.Build.0 = Debug|x86
+		{A795AB3D-678A-4ABD-8571-605F69680809}.Release|x86.ActiveCfg = Release|x86
+		{A795AB3D-678A-4ABD-8571-605F69680809}.Release|x86.Build.0 = Release|x86
+		{1C1AAE43-92AB-4972-93EC-4D6A8A648830}.Debug|x86.ActiveCfg = Debug|x86
+		{1C1AAE43-92AB-4972-93EC-4D6A8A648830}.Release|x86.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
