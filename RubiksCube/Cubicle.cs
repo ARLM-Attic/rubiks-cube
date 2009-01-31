@@ -72,7 +72,7 @@ namespace RubiksCube
         {
             Id = cubie.Id;
             Cubie = cubie;
-            BoundingBox = XNAUtils.CreateBoxFromSphere(cubie.Mesh.BoundingSphere);
+            //BoundingBox = XNAUtils.CreateBoxFromSphere(cubie.Mesh.BoundingSphere);
         }
 
     }

@@ -38,7 +38,11 @@ namespace RubiksCube
 
         private string GetKey(string meshName)
         {
-            return meshName.Substring(5).ToUpper();
+            string key = meshName.Substring(5).ToUpper();
+            int dot = key.IndexOf('.');
+            if (dot >= 0)
+                key = key.Substring(0, dot);
+            return key; 
         }
 
         public void Init(Model model)
@@ -56,10 +60,23 @@ namespace RubiksCube
                 else
                 {
                     key = GetKey(mesh.Name);
-                    cubeConfiguration.Add(key, new Cubicle(new Cubie(key, mesh)));
+                    AddMesh(cubeConfiguration, key, mesh);
+                    //cubeConfiguration.Add(key, new Cubicle(new Cubie(key, mesh)));
                 }
             }
             _cubeConfiguration = cubeConfiguration;
+        }
+
+        private void AddMesh(Dictionary<CubicleKey, Cubicle> cubeConfiguration, string cubieName, ModelMesh mesh)
+        {
+            Cubie cubie = null;
+            if (!cubeConfiguration.ContainsKey(cubieName))
+                cubeConfiguration.Add(cubieName, new Cubicle(new Cubie(cubieName, mesh)));
+            else
+            {
+                cubie = cubeConfiguration[cubieName].Cubie;
+                cubie.AddMesh(mesh);
+            }
         }
 
         public void Reset()
@@ -67,7 +84,7 @@ namespace RubiksCube
             Dictionary<CubicleKey, Cubicle> cubeConfiguration = new Dictionary<CubicleKey, Cubicle>();
             foreach (Cubicle cubicle in _cubeConfiguration.Values)
             {
-                Cubie cubie = cubicle.Cubie.Clone();
+                Cubie cubie = cubicle.Cubie;//.Clone();
                 cubie.Reset();
                 cubeConfiguration.Add(cubie.Id, new Cubicle(cubie));
             }
@@ -276,37 +293,33 @@ namespace RubiksCube
         //private int debug = 0;
         public void DrawModel(Model model, IEnumerable<Cubie> selectedCubies, Matrix worldMatrix, Matrix[] modelTransforms, Matrix viewMatrix, Matrix projectionMatrix)
         {
-            int meshIndex = 0;
             model.CopyAbsoluteBoneTransformsTo(modelTransforms);
             foreach (Cubicle cubicle in _cubeConfiguration.Values)
             {
-                ModelMesh mesh = cubicle.Cubie.Mesh;
-                Matrix transform = modelTransforms[mesh.ParentBone.Index] * worldMatrix;
-                /*
-                if (cubicle.Cubie.Id == "UFL")
+                List<Mesh> meshes = cubicle.Cubie.Meshes;
+                foreach (Mesh mesh in meshes)
                 {
-                    if(debug%60 == 0)
-                        Debug.WriteLine(string.Format("cubicle: {0}, cubie transform: {1} boneIndex: {2}", cubicle.Id, transform, mesh.ParentBone.Index));
-                    debug++;
-                }*/
-                foreach (BasicEffect effect in mesh.Effects)
-                {
-                    if (selectedCubies != null && selectedCubies.Contains(cubicle.Cubie))
-                    //if(meshIndex == selectedMesh[0])
+                    ModelMesh modelMesh = mesh.ModelMesh;
+                    Matrix transform = modelTransforms[modelMesh.ParentBone.Index] * worldMatrix;
+                    foreach (BasicEffect effect in modelMesh.Effects)
                     {
-                        effect.AmbientLightColor = Vector3.One;
+                        if (selectedCubies != null && selectedCubies.Contains(cubicle.Cubie))
+                        //if(meshIndex == selectedMesh[0])
+                        {
+                            effect.AmbientLightColor = Vector3.One;
+                        }
+                        else
+                        {
+                            effect.EnableDefaultLighting();
+                            effect.PreferPerPixelLighting = true;
+                        }
+                        effect.World = transform;
+                        effect.View = viewMatrix;
+                        effect.Projection = projectionMatrix;
                     }
-                    else
-                    {
-                        effect.EnableDefaultLighting();
-                        effect.PreferPerPixelLighting = true;
-                    }
-                    effect.World = transform;
-                    effect.View = viewMatrix;
-                    effect.Projection = projectionMatrix;
+                    modelMesh.Draw();
+                    
                 }
-                mesh.Draw();
-                meshIndex++;
             }
 
             if (_nonCubeMeshs != null)

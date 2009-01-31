@@ -83,7 +83,6 @@ namespace RubiksCube
             _model = XNAUtils.LoadModelWithBoundingSphere(out _cubeTransforms, asset, content);
             _cubeTransforms = XNAUtils.AutoScale(_model, 15.0f);
 
-            Debug.WriteLine(string.Format("start transforms[18]: {0}", _cubeTransforms[18]));
 
             _cubeOriginalTransforms = new Matrix[_model.Bones.Count];
             _model.CopyBoneTransformsTo(_cubeOriginalTransforms);
