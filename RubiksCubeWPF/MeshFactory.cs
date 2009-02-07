@@ -8,8 +8,8 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
 
-using CMatrix = CubeLib.Math.Matrix;
-using CubeLib;
+using CMatrix = Knoics.Math.Matrix;
+using Knoics.RubiksCube;
 
 namespace RubiksCubeWPF
 {

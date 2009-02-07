@@ -14,8 +14,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Media.Media3D;
 using System.Windows.Controls.Primitives;
-using CubeLib;
-using CubeLib.Common;
+using Knoics.RubiksCube;
+
 
 namespace RubiksCubeWPF
 {
