@@ -86,23 +86,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Animator.cs" />
     <Compile Include="ArcBallCamera.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="Collision.cs" />
-    <Compile Include="Help3D.cs" />
     <Compile Include="ICamera.cs" />
     <Compile Include="IInput.cs" />
     <Compile Include="Input.cs" />
     <Compile Include="QuaternionCamera.cs" />
     <Compile Include="Timer.cs" />
     <Compile Include="Fps.cs" />
-    <Compile Include="Group.cs" />
     <Compile Include="ModelPresentation.cs" />
     <Compile Include="ModelStructureExport.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TextLabel.cs" />
-    <Compile Include="XNAUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <NestedContentProject Include="Content\Content.contentproj">
