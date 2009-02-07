@@ -6,12 +6,6 @@
     <Grid>
 		<TextBlock Height="21" HorizontalAlignment="Right" Margin="0,0,12,0" Name="txtCubeOps" VerticalAlignment="Bottom" Width="372" />
 		<TextBox Height="23" HorizontalAlignment="Left"  Margin="4,0,0,0" Name="txtInput" MouseDown="txtInput_MouseDown" MouseUp="txtInput_MouseUp" VerticalAlignment="Bottom" Width="384" />
-		<DockPanel Margin="0,0,0,29" Name="cubePanel">
-			<Viewport3D x:Name="viewport">
-				<Viewport3D.Camera>
-					<PerspectiveCamera x:Name="camera" Position="30 30 30" LookDirection="-1 -1 -1" UpDirection="0 1 0" FieldOfView="90"></PerspectiveCamera>
-				</Viewport3D.Camera>
-			</Viewport3D>
-		</DockPanel> 
+		<DockPanel Margin="0,0,0,29" Name="cubePanel"/>
 	</Grid>
 </Window>

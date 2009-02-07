@@ -3,6 +3,7 @@
 // Author:      Ligang Wang
 // Email:       ligang@dingn.com
 //-----------------------------------------------------------------------------
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,13 +11,15 @@ using System.Text;
 
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Media.Media3D;
 
+using Kit3D.Windows.Controls;
+using Kit3D.Windows.Media.Media3D;
+using Kit3D.Windows.Media;
 
 using CMatrix = Knoics.Math.Matrix;
 using Knoics.RubiksCube;
 
-namespace RubiksCubeWPF
+namespace RubiksCubeSL
 {
     class MeshFactory : IMeshFactory
     {
@@ -71,28 +74,6 @@ namespace RubiksCubeWPF
             return points;
         }
 
-        //public CubieMesh(Axis axis, Position center, MeshSize size, double edgeWidth, MeshColor color)
-        /*
-        public CubieMesh(Position[] vertexes, MeshColor color)
-        {
-            Center = new Point3D(center.X, center.Y, center.Z);
-            Axis = axis;
-            //   Center = center;
-            Size = size;
-            Color = MapToColor(color);
-            SetColor(Color);
-            EdgeWidth = edgeWidth;
-
-            _mesh = new MeshGeometry3D();
-            _model = new GeometryModel3D();
-            _model.Geometry = _mesh;
-
-            this.Content = _model;
-            ConstructGeometry();
-
-        }
-        */
-
         public CubieMesh(Position[] vertexes, MeshColor color)
         {
             _model = new ModelVisual3D();
@@ -107,34 +88,30 @@ namespace RubiksCubeWPF
             //positions.Freeze();
             _mesh.Positions = positions;
 
-            Int32Collection indices = new Int32Collection(2 * 3);
+            Int32Collection indices = new Int32Collection
+            {
+                3,1,0,
+                3,2,1
+            };
 
-            indices.Add(0);
-            indices.Add(1);
-            indices.Add(2);
-
-            indices.Add(2);
-            indices.Add(3);
-            indices.Add(0);
-
-            //indices.Freeze();
             _mesh.TriangleIndices = indices;
+            _geometry.SeamSmoothing = 1;
         }
 
         private void SetColor(Color color)
         {
-            /*SL Version
-            Material colorMaterial = new EmissiveMaterial(new SolidColorBrush(color));
+            Material colorMaterial = new DiffuseMaterial(new Kit3DBrush(new SolidColorBrush(color)));
             _geometry.Material = colorMaterial;
-             */
-            
+            _geometry.BackMaterial = colorMaterial;
+             
+            /*WPF Version
             MaterialGroup unlitMaterial = new MaterialGroup();
             unlitMaterial.Children.Add(new DiffuseMaterial(new SolidColorBrush(Colors.Black)));
             unlitMaterial.Children.Add(new EmissiveMaterial(new SolidColorBrush(color)));
             //unlitMaterial.Freeze();
-
             _geometry.Material = unlitMaterial;
             _geometry.BackMaterial = unlitMaterial;
+             */
         }
 
         /*

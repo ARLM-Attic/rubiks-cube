@@ -1,0 +1,11 @@
+﻿<UserControl x:Class="RubiksCubeSL.Page"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    Width="800" Height="600" Background="CadetBlue" Loaded="UserControl_Loaded">
+    <Grid x:Name="LayoutRoot" Background="CadetBlue">
+		<TextBlock Height="21" HorizontalAlignment="Right" Margin="0,0,12,0" Name="txtCubeOps" VerticalAlignment="Bottom" Width="372" />
+		<TextBox Height="23" HorizontalAlignment="Left"  Margin="4,0,0,0" Name="txtInput" MouseLeftButtonDown="TextBox_MouseLeftButtonDown"  MouseLeftButtonUp="TextBox_MouseLeftButtonUp"  VerticalAlignment="Bottom" Width="384" />
+		<Canvas Margin="0,0,0,29" Name="cubePanel">
+		</Canvas>
+	</Grid>
+</UserControl>
