@@ -10,7 +10,7 @@
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="60"/>
+			<RowDefinition Height="50"/>
 			<RowDefinition Height="*"/>
 			<RowDefinition Height="30"/>
 		</Grid.RowDefinitions>
@@ -22,8 +22,8 @@
 				<ColumnDefinition Width="*"/>
 			</Grid.ColumnDefinitions>
 			<Grid.RowDefinitions>
-				<RowDefinition Height="30"></RowDefinition>
-				<RowDefinition Height="30"></RowDefinition>
+				<RowDefinition Height="25"></RowDefinition>
+				<RowDefinition Height="25"></RowDefinition>
 			</Grid.RowDefinitions>
 			<TextBlock Grid.Row="0" Grid.Column="0" Foreground="White" Margin="5,5,5,5" Name="lbSteps" Width="Auto" Text="Steps:"/>
 			<TextBlock Grid.Row="0" Grid.Column="1" Foreground="White" Margin="5,5,5,5" Name="tbSteps" Width="Auto" Text="0"/>
@@ -31,7 +31,7 @@
 			<Button Width="100" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="3" Name="btnSolved" Content="Show Solved" Click="btnSolved_Click"/>
 
 			<TextBlock Grid.Row="1" Grid.Column="0" Foreground="White" Margin="5,5,5,5" Name="lbCubeOps" Width="Auto" Text="Seqs:"/>
-			<TextBlock Grid.Row="1" Grid.ColumnSpan="3" Foreground="White" Margin="5,5,5,5" Name="tbCubeOps" Width="Auto"/>
+			<TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Foreground="White" Margin="5,5,5,5" Name="tbCubeOps" Width="Auto"/>
 			
 		</Grid> 
 		<Grid x:Name="cubePanel" Grid.Row="1" Width="800" Height="540" ></Grid>
