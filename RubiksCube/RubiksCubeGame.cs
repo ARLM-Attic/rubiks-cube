@@ -23,7 +23,13 @@ using Knoics.RubiksCube;
 using XNALib;
 using WindowSystem;
 using InputEventSystem;
+using Knoics.Math;
 using CMatrix = Knoics.Math.Matrix;
+using Matrix = Microsoft.Xna.Framework.Matrix;
+using CVector3 = Knoics.Math.Vector3;
+using Vector3 = Microsoft.Xna.Framework.Vector3;
+using CColor = Knoics.RubiksCube.Color;
+using Color = Microsoft.Xna.Framework.Graphics.Color;
 
 namespace RubiksCubeWindows
 {
@@ -58,7 +64,7 @@ namespace RubiksCubeWindows
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            RubiksCube.MeshFactory = new MeshFactory();
+            CubeConfiguration.Factory = new Factory();
 
             this.input = new InputEvents(this);
             this.Components.Add(input);
@@ -75,7 +81,7 @@ namespace RubiksCubeWindows
 
             _commandLineCheckTimer.OnTime = (t) =>
             {
-                _textBox.Text = Interpreter.DoCommand(_rubikscube, _textBox.Text);
+                _textBox.Text = _rubikscube.DoCommand(_textBox.Text);
                 return true;
             };
             this.IsFixedTimeStep = false;
@@ -188,10 +194,10 @@ namespace RubiksCubeWindows
             // Create a new SpriteBatch, which can be used to draw textures.
             //spriteBatch = new SpriteBatch(GraphicsDevice);
             _animator = new Animator(30f); //interval: 30ms 
-            RubiksCube.GraphicsDevice = graphics.GraphicsDevice;
+            Factory.GraphicsDevice = graphics.GraphicsDevice;
 
 
-            _rubikscube = new RubiksCube(new Position() { X = 0, Y = 0, Z = 0 }, 10, _animator);
+            _rubikscube = RubiksCube.CreateRubiksCube(new Point3() { X = 0, Y = 0, Z = 0 }, 10, _animator);
             /*
             Matrix[] modelTransforms;
             _rubikscube.InitModel(XNAUtils.LoadModelWithBoundingSphere(out modelTransforms, "rubik_cube-XNA", Content));
@@ -229,13 +235,15 @@ namespace RubiksCubeWindows
                 _animator.Start(null);
             }
             InputMode mode = _input.Update(this, _camera.Projection, _camera.View);
-            /*
+            
             if (mode == InputMode.Select)
             {
-                Ray ray = XNAUtils.CreateRayFrom2D(GraphicsDevice, _input.Selected, _camera.Projection, _camera.View, Matrix.Identity);
-                _rubikscube.SelectCubicle(ray);
+                //Ray ray = CreateRayFrom2D(_input.Selected);
+                
+                //_rubikscube.SelectCubicle(ray);
                 
             }
+            /*
             else if (mode == InputMode.Drag)
             {
                 Vector2 d = _input.DragTo - _input.DragFrom;
@@ -268,6 +276,26 @@ namespace RubiksCubeWindows
             base.Update(gameTime);
         }
 
+        /*
+        public Ray CreateRayFrom2D(Microsoft.Xna.Framework.Vector2 point)
+        {
+            
+            Vector3 rayNear = graphics.GraphicsDevice.Viewport.Unproject(
+                                    new Vector3(point.X, point.Y, 0f),
+                                    _camera.Projection, _camera.View, _worldMatrix);
+
+            Vector3 rayFar = graphics.GraphicsDevice.Viewport.Unproject(
+                    new Vector3(point.X, point.Y, 1f),
+                    _camera.Projection, _camera.View, _worldMatrix);
+
+            Vector3 direction = rayFar - rayNear;
+            direction.Normalize();
+            //Debug.WriteLine(string.Format("start:{0}, direction:{1}", rayNear, direction));
+            Ray ray = new Ray(rayNear, direction);
+            return ray;
+        }
+        */
+
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
@@ -277,10 +305,10 @@ namespace RubiksCubeWindows
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
 
-            //_model.CopyAbsoluteBoneTransformsTo(_modelTransforms);
-            //_rubikscube.DrawModel(_modelTransforms, _worldMatrix, _camera.View, _camera.Projection);
-
-            _rubikscube.Draw(MathConverter.FromXNAMatrix(_worldMatrix), MathConverter.FromXNAMatrix(_camera.View), MathConverter.FromXNAMatrix(_camera.Projection));
+            foreach (IMesh mesh in _rubikscube.Meshes)
+            {
+                ((Mesh)mesh).Draw(_worldMatrix, _camera.View, _camera.Projection);
+            }
             
 
             base.Draw(gameTime);

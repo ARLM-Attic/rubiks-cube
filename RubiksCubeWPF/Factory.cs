@@ -1,9 +1,9 @@
 ﻿//-----------------------------------------------------------------------------
-// File:        MeshFactory.cs
+// File:        Factory.cs
 // Author:      Ligang Wang
 // Email:       ligang@dingn.com
+// Date:        01/31/2009
 //-----------------------------------------------------------------------------
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,47 +11,79 @@ using System.Text;
 
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Media3D;
 
-using Kit3D.Windows.Controls;
-using Kit3D.Windows.Media.Media3D;
-using Kit3D.Windows.Media;
-
+using Knoics.Math;
 using CMatrix = Knoics.Math.Matrix;
+using CColor = Knoics.RubiksCube.Color;
+using Color = System.Windows.Media.Color;
+using Size = System.Windows.Size;
 using Knoics.RubiksCube;
 
-namespace RubiksCubeSL
+namespace RubiksCubeWPF
 {
-    class MeshFactory : IMeshFactory
+    class Factory : IFactory
     {
-        #region IMeshFactory Members
-        public IMesh CreateMesh(Position[] vertexes, MeshColor color)//(Axis axis, Position center, MeshSize size, double edgeWidth, MeshColor color)
+        #region IFactory Members
+        public IMesh CreateMesh(CubieFace face, Point3[] vertexes, CColor color)//(Axis axis, Position center, MeshSize size, double edgeWidth, MeshColor color)
         {
             //return new CubieMesh(axis, center, size, edgeWidth, color);
-            return new CubieMesh(vertexes, color);
+            return new CubieMesh(face, vertexes, color);
         }
 
-        public IMesh CreateMesh(object meshObject)
+        public IModel CreateModel()
+        {
+            return new CubeModel();
+        }
+
+        #endregion
+    }
+
+    class CubeModel : IModel
+    {
+        #region IModel Members
+        ModelVisual3D _visualModel;
+
+        public ModelVisual3D ModelVisual { get { return _visualModel; } }
+
+        public CubeModel()
+        {
+            _visualModel = new ModelVisual3D();
+
+            Model3DGroup group = new Model3DGroup();
+            _visualModel.Content = group;
+            RotateTransform3D rotation = new RotateTransform3D();
+            _visualModel.Transform = rotation;
+            rotation.Rotation = new AxisAngleRotation3D();
+
+        }
+
+        public Knoics.Math.Matrix GetTransform()
+        {
+            return MathConverter.ToMatrix(_visualModel.Transform.Value);
+        }
+
+        public void Transform(Knoics.Math.Matrix matrix)
         {
             throw new NotImplementedException();
         }
-        #endregion
 
+        #endregion
     }
 
     class CubieMesh : IMesh
     {
         private readonly GeometryModel3D _geometry;
         private readonly MeshGeometry3D _mesh;
-        private readonly ModelVisual3D _model;
-        private MeshSize Size { get; set; }
+        private Size Size { get; set; }
         private Color Color { get; set; }
         private Point3D Center { get; set; }
         private Axis Axis { get; set; }
         private double EdgeWidth { get; set; }
 
-        public ModelVisual3D ModelVisual3D { get { return _model; } }
+        public GeometryModel3D Geometry { get { return _geometry; } }
 
-        private Color MapToColor (MeshColor meshColor){
+        private Color MapToColor (CColor meshColor){
             Color color = new Color();
             color.A = meshColor.A;
             color.B = meshColor.B;
@@ -61,10 +93,10 @@ namespace RubiksCubeSL
             return color;
         }
 
-        private Point3DCollection PositionsToPoint3DCollection(Position[] positions)
+        private Point3DCollection PositionsToPoint3DCollection(Point3[] positions)
         {
             Point3DCollection points = new Point3DCollection(positions.Count());
-            foreach(Position pos in positions){
+            foreach(Point3 pos in positions){
                 Point3D vertex = new Point3D();
                 vertex.X = pos.X;
                 vertex.Y = pos.Y;
@@ -74,44 +106,48 @@ namespace RubiksCubeSL
             return points;
         }
 
-        public CubieMesh(Position[] vertexes, MeshColor color)
+
+        public CubieMesh(CubieFace face, Point3[] vertexes, CColor color)
         {
-            _model = new ModelVisual3D();
+            _face = face;
             _mesh = new MeshGeometry3D();
             _geometry = new GeometryModel3D();
             _geometry.Geometry = _mesh;
             SetColor(MapToColor(color));
-            _model.Content = _geometry;
 
 
             Point3DCollection positions = PositionsToPoint3DCollection(vertexes);
             //positions.Freeze();
             _mesh.Positions = positions;
 
-            Int32Collection indices = new Int32Collection
-            {
-                3,1,0,
-                3,2,1
-            };
+            Int32Collection indices = new Int32Collection(2 * 3);
 
+            indices.Add(0);
+            indices.Add(1);
+            indices.Add(2);
+
+            indices.Add(2);
+            indices.Add(3);
+            indices.Add(0);
+
+            //indices.Freeze();
             _mesh.TriangleIndices = indices;
-            _geometry.SeamSmoothing = 1;
         }
 
         private void SetColor(Color color)
         {
-            Material colorMaterial = new DiffuseMaterial(new Kit3DBrush(new SolidColorBrush(color)));
+            /*SL Version
+            Material colorMaterial = new EmissiveMaterial(new SolidColorBrush(color));
             _geometry.Material = colorMaterial;
-            _geometry.BackMaterial = colorMaterial;
-             
-            /*WPF Version
+             */
+            
             MaterialGroup unlitMaterial = new MaterialGroup();
             unlitMaterial.Children.Add(new DiffuseMaterial(new SolidColorBrush(Colors.Black)));
             unlitMaterial.Children.Add(new EmissiveMaterial(new SolidColorBrush(color)));
             //unlitMaterial.Freeze();
+
             _geometry.Material = unlitMaterial;
             _geometry.BackMaterial = unlitMaterial;
-             */
         }
 
         /*
@@ -221,38 +257,39 @@ namespace RubiksCubeSL
         */
 
         #region IMesh Members
+        private CubieFace _face;
+        public CubieFace Face { get { return _face; } }
 
         public void Reset()
         {
-            
+            _geometry.Transform = new MatrixTransform3D(Matrix3D.Identity);
         }
 
-        public void Transform(CMatrix matrix)
+
+        private Matrix3D _savedTransform;
+        public void Save()
+        {
+            _savedTransform = _geometry.Transform.Value;
+        }
+        public void Restore()
+        {
+            _geometry.Transform = new MatrixTransform3D(_savedTransform);
+        }
+
+        public void Transform(CMatrix matrix, bool isFromSaved)
         {
             Matrix3D m = MathConverter.ToMatrix3D(matrix);
-            _geometry.Transform = new MatrixTransform3D(Matrix3D.Multiply(m, _geometry.Transform.Value));// m * _model.Transform;
-            
+            if (isFromSaved)
+                _geometry.Transform = new MatrixTransform3D(Matrix3D.Multiply(m, _savedTransform));// m * _model.Transform;
+            else
+                _geometry.Transform = new MatrixTransform3D(Matrix3D.Multiply(m, _geometry.Transform.Value));// m * _model.Transform;
+
         }
 
-        #endregion
-
-        #region IMesh Members
-
-
-        public object MeshObject
+        public CMatrix GetTransform()
         {
-            get { return this; }
+            return MathConverter.ToMatrix(_geometry.Transform.Value);
         }
-
-        #endregion
-
-        #region IMesh Members
-
-        public void Draw(CMatrix world, CMatrix view, CMatrix projection)
-        {
-            
-        }
-
         #endregion
     }
 
