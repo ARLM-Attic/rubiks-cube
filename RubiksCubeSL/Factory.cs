@@ -66,7 +66,8 @@ namespace RubiksCubeSL
 
         public void Transform(CMatrix matrix)
         {
-            throw new NotImplementedException();
+            Matrix3D m = MathConverter.ToMatrix3D(matrix);
+            _visualModel.Transform = new MatrixTransform3D(Matrix3D.Multiply(m, _visualModel.Transform.Value));// m * _model.Transform;
         }
 
         #endregion

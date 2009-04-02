@@ -38,7 +38,7 @@ namespace RubiksCubeWPF
 
 
         private RubiksCube _rubikscube;
-        private Animator _animator;
+        
         private Viewport3D _viewport;
         private ModelVisual3D _model;
         private const int CommandCheckInterval = 1000; //in ms
@@ -90,11 +90,11 @@ namespace RubiksCubeWPF
             camera.UpDirection = new Vector3D(0, 1, 0);
             camera.FieldOfView = 90;
 
-            _animator = new Animator(30f); //interval: 30ms 
+            
 
             
             CubeConfiguration.Factory = new Factory();
-            _rubikscube = RubiksCube.CreateRubiksCube(new Point3(), 10, _animator);
+            _rubikscube = RubiksCube.CreateRubiksCube(new Point3(), 10);
             ModelVisual3D model = ((CubeModel)_rubikscube.Model).ModelVisual;
             Model3DGroup group = (Model3DGroup)model.Content;
             viewport.Children.Add(model);
@@ -128,11 +128,11 @@ namespace RubiksCubeWPF
                 _elapsedTime = 0;
             }
 
-            if (_animator.ReadyInQueue)
+            if (_rubikscube.Animator.ReadyInQueue)
             {
-                _animator.Start(null);
+                _rubikscube.Animator.Start(null);
             }
-            _animator.Update();
+            _rubikscube.Animator.Update();
         }
 
         private void cubePanel_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

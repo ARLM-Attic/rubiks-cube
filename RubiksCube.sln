@@ -7,7 +7,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Library", "Library", "{5E9C
 	ProjectSection(SolutionItems) = preProject
 		Library\InputEventSystem.dll = Library\InputEventSystem.dll
 		Library\Kit3D.dll = Library\Kit3D.dll
-		Library\Knoics.dll = Library\Knoics.dll
 		Library\Knoics.SL.dll = Library\Knoics.SL.dll
 		Library\WindowSystem.dll = Library\WindowSystem.dll
 	EndProjectSection

@@ -47,8 +47,7 @@ namespace RubiksCubeSL
 
 
         private RubiksCube _rubikscube;
-        private CubeInteraction _interaction;
-        private Animator _animator;
+        
         private ModelVisual3D _model;
         private Viewport3D _viewport;
         private const int CommandCheckInterval = 1000; //in ms
@@ -57,7 +56,7 @@ namespace RubiksCubeSL
         private Point _cubeCenter = new Point();
         private double _cubeSize = 0;
         private PerspectiveCamera _camera;
-        private CMatrix _viewMatrix;
+        //private CMatrix _viewMatrix;
         private Dictionary<MeshGeometry3D, CubieMesh> _meshes = new Dictionary<MeshGeometry3D,CubieMesh>();
         private void TextBox_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -90,7 +89,11 @@ namespace RubiksCubeSL
             }*/
         }
 
-
+        CMatrix _cameraRotate;
+        int _cameraMove = 0;
+        int _cameraFar = 120;
+        int _cameraNear = 60;
+        int _cameraZ = 60;
         private void Init()
         {
 
@@ -101,23 +104,23 @@ namespace RubiksCubeSL
             this.cubePanel.Children.Add(viewport);
             PerspectiveCamera camera = new PerspectiveCamera();
             _camera = camera;
-            camera.Position = new Point3D(0, 0, 60);
+            camera.Position = new Point3D(0, 0, 60); //60
             camera.LookDirection = new Vector3D(0, 0, -1);
             camera.UpDirection = new Vector3D(0, 1, 0);
-            camera.FieldOfView = 75;
+            camera.FieldOfView = 80;
 
             
             Vector3 v = new Vector3(-1, 1, 0); v.Normalize();
             Knoics.Math.Quaternion q = Knoics.Math.Quaternion.CreateFromAxisAngle(v, Math.PI/4);
-            CMatrix r = CMatrix.CreateFromQuaternion(q);
-            Vector3 p = new Vector3(0, 0, 60);
-            p = Vector3.Transform(p, r); _camera.Position = new Point3D(p.X, p.Y, p.Z);
+            _cameraRotate = CMatrix.CreateFromQuaternion(q);
+            Vector3 p = new Vector3(0, 0, 60);//120); //60;
+            p = Vector3.Transform(p, _cameraRotate); _camera.Position = new Point3D(p.X, p.Y, p.Z);
 
             Vector3 d = new Vector3(0, 0, -1);
-            d = Vector3.Transform(d, r); _camera.LookDirection = new Vector3D(d.X, d.Y, d.Z);
+            d = Vector3.Transform(d, _cameraRotate); _camera.LookDirection = new Vector3D(d.X, d.Y, d.Z);
 
 
-            _viewMatrix = Knoics.Interactive.Camera.GetViewMatrix(MathConverter.ToPoint3(camera.Position), MathConverter.ToVector3(camera.LookDirection), MathConverter.ToVector3(camera.UpDirection));
+            //_viewMatrix = Knoics.Interactive.Camera.GetViewMatrix(MathConverter.ToPoint3(camera.Position), MathConverter.ToVector3(camera.LookDirection), MathConverter.ToVector3(camera.UpDirection));
 
             viewport.Camera = camera;
             viewport.ShowModelBoundingBoxes = true;
@@ -125,11 +128,10 @@ namespace RubiksCubeSL
             viewport.VerticalAlignment = VerticalAlignment.Stretch;
             
             
-            _animator = new Animator(30f); //interval: 30ms 
+            
 
             CubeConfiguration.Factory = new Factory();
-            _rubikscube = RubiksCube.CreateRubiksCube(new Point3(), 10, _animator);
-            _interaction = new CubeInteraction(_rubikscube);
+            _rubikscube = RubiksCube.CreateRubiksCube(new Point3(), 10);
             ModelVisual3D model = ((CubeModel)_rubikscube.Model).ModelVisual;
             viewport.Children.Add(model);
 
@@ -141,7 +143,7 @@ namespace RubiksCubeSL
                 _meshes.Add(geometry, (CubieMesh)mesh);
             }
             _rubikscube.OneOpDone = RubiksCube_OneOpDone;
-            _rubikscube.Random();
+            //_rubikscube.Random();
 
 
             _model = model;
@@ -163,11 +165,25 @@ namespace RubiksCubeSL
                 _elapsedTime = 0;
             }
 
-            if (_animator.ReadyInQueue)
+            _rubikscube.Animator.Start(null);
+
+            _rubikscube.Animator.Update();
+
+            //camera movement
+            if (_cameraMove != 0)
             {
-                _animator.Start(null);
+                _cameraZ += _cameraMove;
+                Vector3 p = new Vector3(0, 0, _cameraZ);//120); //60;
+                p = Vector3.Transform(p, _cameraRotate); _camera.Position = new Point3D(p.X, p.Y, p.Z);
+                //_rubikscube.ViewPoint = MathConverter.ToPoint3(_camera.Position);
+                _viewport.UpdateLayout();
+
+                if (_cameraZ == _cameraNear || _cameraZ == _cameraFar)
+                {
+                    _cameraMove = 0;
+                }
             }
-            _animator.Update();            
+
         }
 
         private void UserControl_LayoutUpdated(object sender, EventArgs e)
@@ -186,7 +202,7 @@ namespace RubiksCubeSL
         private void UserControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             _isLeftButtonPressed = true;
-            _interaction.StartTrack(MathConverter.ToPoint2(e.GetPosition(_viewport)));
+            _rubikscube.Interaction.StartTrack(MathConverter.ToPoint2(e.GetPosition(_viewport)));
         }
 
 
@@ -243,7 +259,7 @@ namespace RubiksCubeSL
         private void UserControl_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             _isLeftButtonPressed = false;
-            _interaction.EndTrack();
+            _rubikscube.Interaction.EndTrack();
         }
 
 
@@ -260,9 +276,16 @@ namespace RubiksCubeSL
         
         private void UserControl_MouseMove(object sender, MouseEventArgs e)
         {
-            if (_isLeftButtonPressed )
+            if (_isLeftButtonPressed)
             {
-                _interaction.Track(MathConverter.ToPoint2(e.GetPosition(_viewport)));
+                _rubikscube.Interaction.Track(MathConverter.ToPoint2(e.GetPosition(_viewport)));
+            }
+            else
+            {
+                if (_rubikscube.Interaction.InTrack)
+                {
+                    _rubikscube.Interaction.EndTrack();
+                }
             }
             
             HitResult result;
@@ -279,16 +302,41 @@ namespace RubiksCubeSL
             }
         }
 
+        void ResetUI()
+        {
+            _steps = 0; tbSteps.Text = _steps.ToString();
+            tbCubeOps.Text = string.Empty;
+        }
+
         private void btnSolved_Click(object sender, RoutedEventArgs e)
         {
-            _steps = 0;
             _rubikscube.Reset();
+            ResetUI();
         }
 
         private void btnRandom_Click(object sender, RoutedEventArgs e)
         {
-            _steps = 0;
             _rubikscube.Random();
+            ResetUI();
+        }
+
+        private void btnUnfold_Click(object sender, RoutedEventArgs e)
+        {
+            _rubikscube.Unfold(30);
+            double z = 0;
+            if (_rubikscube.Unfolded)
+            {
+                //z = 120;
+                // to 2:
+                _cameraMove = 2;
+                btnUnfold.Content = "Fold";
+            }
+            else
+            {
+                //z = 60;
+                _cameraMove = -2;
+                btnUnfold.Content = "Unfold";
+            }
         }
 
     }

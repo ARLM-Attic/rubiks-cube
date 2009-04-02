@@ -5,7 +5,7 @@
     MouseLeftButtonDown="UserControl_MouseLeftButtonDown" MouseLeftButtonUp="UserControl_MouseLeftButtonUp"
     MouseMove="UserControl_MouseMove" 
     >
-    <Grid x:Name="LayoutRoot" Background="DimGray">
+    <Grid x:Name="LayoutRoot" Background="#A4A89C">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
@@ -19,6 +19,7 @@
 				<ColumnDefinition Width="50"/>
 				<ColumnDefinition Width="40"/>
 				<ColumnDefinition Width="100"/>
+				<ColumnDefinition Width="100"/>
 				<ColumnDefinition Width="*"/>
 			</Grid.ColumnDefinitions>
 			<Grid.RowDefinitions>
@@ -29,9 +30,10 @@
 			<TextBlock Grid.Row="0" Grid.Column="1" Foreground="White" Margin="5,5,5,5" Name="tbSteps" Width="Auto" Text="0"/>
 			<Button Width="100" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="2" Name="btnRandom" Content="Show Random" Click="btnRandom_Click"/>
 			<Button Width="100" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="3" Name="btnSolved" Content="Show Solved" Click="btnSolved_Click"/>
+			<Button Width="100" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="4" Name="btnUnfold" Content="Unfold" Click="btnUnfold_Click"/>
 
 			<TextBlock Grid.Row="1" Grid.Column="0" Foreground="White" Margin="5,5,5,5" Name="lbCubeOps" Width="Auto" Text="Seqs:"/>
-			<TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Foreground="White" Margin="5,5,5,5" Name="tbCubeOps" Width="Auto"/>
+			<TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" Foreground="White" Margin="5,5,5,5" Name="tbCubeOps" Width="Auto"/>
 			
 		</Grid> 
 		<Grid x:Name="cubePanel" Grid.Row="1" Width="800" Height="540" ></Grid>
