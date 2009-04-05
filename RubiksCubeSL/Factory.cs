@@ -59,15 +59,37 @@ namespace RubiksCubeSL
             rotation.Rotation = new AxisAngleRotation3D();
         }
 
-        public CMatrix GetTransform()
+        public CMatrix Transform
         {
-            return MathConverter.ToMatrix(_visualModel.Transform.Value);
+            get
+            {
+                return MathConverter.ToMatrix(_visualModel.Transform.Value);
+            }
         }
 
-        public void Transform(CMatrix matrix)
+        public void DoTransform(CMatrix matrix, bool isFromSaved)
         {
             Matrix3D m = MathConverter.ToMatrix3D(matrix);
-            _visualModel.Transform = new MatrixTransform3D(Matrix3D.Multiply(m, _visualModel.Transform.Value));// m * _model.Transform;
+            if (isFromSaved)
+                _visualModel.Transform = new MatrixTransform3D(Matrix3D.Multiply(m, _savedTransform));// m * _model.Transform;
+            else
+                _visualModel.Transform = new MatrixTransform3D(Matrix3D.Multiply(m, _visualModel.Transform.Value));// m * _model.Transform;
+
+        }
+
+        public void Reset()
+        {
+            _visualModel.Transform = new MatrixTransform3D(Matrix3D.Identity);
+        }
+
+        private Matrix3D _savedTransform;
+        public void Save()
+        {
+            _savedTransform = _visualModel.Transform.Value;
+        }
+        public void Restore()
+        {
+            _visualModel.Transform = new MatrixTransform3D(_savedTransform);
         }
 
         #endregion
@@ -150,7 +172,7 @@ namespace RubiksCubeSL
         private void SetColor(Color color)
         {
             Material colorMaterial = new DiffuseMaterial(new Kit3DBrush(new SolidColorBrush(color)));
-            Material backcolorMaterial = new DiffuseMaterial(new Kit3DBrush(new SolidColorBrush(Colors.Black)));
+            Material backcolorMaterial = new DiffuseMaterial(new Kit3DBrush(new SolidColorBrush(color)));
             _geometry.Material = colorMaterial;
             _geometry.BackMaterial = backcolorMaterial;
              
@@ -288,7 +310,7 @@ namespace RubiksCubeSL
         {
             _geometry.Transform = new MatrixTransform3D(_savedTransform);
         }
-        public void Transform(CMatrix matrix, bool isFromSaved)
+        public void DoTransform(CMatrix matrix, bool isFromSaved)
         {
             Matrix3D m = MathConverter.ToMatrix3D(matrix);
             if(isFromSaved)
@@ -298,9 +320,12 @@ namespace RubiksCubeSL
             
         }
 
-        public CMatrix GetTransform()
+        public CMatrix Transform
         {
-            return MathConverter.ToMatrix(_geometry.Transform.Value);
+            get
+            {
+                return MathConverter.ToMatrix(_geometry.Transform.Value);
+            }
         }
 
         #endregion

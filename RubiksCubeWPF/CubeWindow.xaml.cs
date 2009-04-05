@@ -63,7 +63,7 @@ namespace RubiksCubeWPF
         }
 
 
-        void RubiksCube_OneOpDone(string op, bool isSolved)
+        void RubiksCube_OneOpDone(string op, string seq, int steps, bool isSolved)
         {
             txtCubeOps.Text = txtCubeOps.Text + op;
         }

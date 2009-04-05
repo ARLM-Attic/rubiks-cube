@@ -36,12 +36,10 @@ namespace RubiksCubeSL
             InitializeComponent();
         }
 
-        int _steps;
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             tbCubeOps.Text = "";
             txtInput.Focus();
-            _steps = 0;
             Init();
         }
 
@@ -76,20 +74,41 @@ namespace RubiksCubeSL
         }
 
 
-        void RubiksCube_OneOpDone(string op, bool isSolved)
+        void RubiksCube_OneOpDone(string op, string seq, int steps,  bool isSolved)
         {
-            _steps++;
-            tbCubeOps.Text = tbCubeOps.Text + op;
-            tbSteps.Text = _steps.ToString();
+            tbSteps.Text = steps.ToString();
+            tbCubeOps.Text = seq;
 
             /*
             if (isSolved)
             {
                 MessageBox.Show("solved.");
             }*/
+            
         }
 
-        CMatrix _cameraRotate;
+        private CMatrix RotateCamera(Vector3 axis, double angle)
+        {
+            axis.Normalize();
+            Knoics.Math.Quaternion q = Knoics.Math.Quaternion.CreateFromAxisAngle(axis, angle);
+            CMatrix m  = CMatrix.CreateFromQuaternion(q);
+
+            
+            
+            Vector3 p = new Vector3(_camera.Position.X, _camera.Position.Y, _camera.Position.Z);//120); //60;
+            p = Vector3.Transform(p, m); _camera.Position = new Point3D(p.X, p.Y, p.Z);
+
+            
+            Vector3 d = new Vector3(_camera.LookDirection.X, _camera.LookDirection.Y, _camera.LookDirection.Z);
+            d = Vector3.Transform(d, m); _camera.LookDirection = new Vector3D(d.X, d.Y, d.Z);
+
+            
+            Vector3 up = new Vector3(_camera.UpDirection.X, _camera.UpDirection.Y, _camera.UpDirection.Z);
+            up = Vector3.Transform(up, m); _camera.UpDirection = new Vector3D(up.X, up.Y, up.Z);
+            
+            return m;
+        }
+        CMatrix _cameraRotate = CMatrix.Identity;
         int _cameraMove = 0;
         int _cameraFar = 120;
         int _cameraNear = 60;
@@ -99,37 +118,18 @@ namespace RubiksCubeSL
 
             Viewport3D viewport = new Viewport3D();
             _viewport = viewport;
-            //cubePanel.Children.Add(viewport);
-            //this.LayoutRoot.Children.Add(viewport);
             this.cubePanel.Children.Add(viewport);
             PerspectiveCamera camera = new PerspectiveCamera();
             _camera = camera;
-            camera.Position = new Point3D(0, 0, 60); //60
-            camera.LookDirection = new Vector3D(0, 0, -1);
-            camera.UpDirection = new Vector3D(0, 1, 0);
-            camera.FieldOfView = 80;
-
-            
-            Vector3 v = new Vector3(-1, 1, 0); v.Normalize();
-            Knoics.Math.Quaternion q = Knoics.Math.Quaternion.CreateFromAxisAngle(v, Math.PI/4);
-            _cameraRotate = CMatrix.CreateFromQuaternion(q);
-            Vector3 p = new Vector3(0, 0, 60);//120); //60;
-            p = Vector3.Transform(p, _cameraRotate); _camera.Position = new Point3D(p.X, p.Y, p.Z);
-
-            Vector3 d = new Vector3(0, 0, -1);
-            d = Vector3.Transform(d, _cameraRotate); _camera.LookDirection = new Vector3D(d.X, d.Y, d.Z);
 
 
-            //_viewMatrix = Knoics.Interactive.Camera.GetViewMatrix(MathConverter.ToPoint3(camera.Position), MathConverter.ToVector3(camera.LookDirection), MathConverter.ToVector3(camera.UpDirection));
-
+            ResetCamera();
             viewport.Camera = camera;
             viewport.ShowModelBoundingBoxes = true;
             viewport.HorizontalAlignment = HorizontalAlignment.Stretch;
             viewport.VerticalAlignment = VerticalAlignment.Stretch;
             
             
-            
-
             CubeConfiguration.Factory = new Factory();
             _rubikscube = RubiksCube.CreateRubiksCube(new Point3(), 10);
             ModelVisual3D model = ((CubeModel)_rubikscube.Model).ModelVisual;
@@ -170,26 +170,32 @@ namespace RubiksCubeSL
             _rubikscube.Animator.Update();
 
             //camera movement
+            
             if (_cameraMove != 0)
             {
                 _cameraZ += _cameraMove;
                 Vector3 p = new Vector3(0, 0, _cameraZ);//120); //60;
                 p = Vector3.Transform(p, _cameraRotate); _camera.Position = new Point3D(p.X, p.Y, p.Z);
-                //_rubikscube.ViewPoint = MathConverter.ToPoint3(_camera.Position);
-                _viewport.UpdateLayout();
-
-                if (_cameraZ == _cameraNear || _cameraZ == _cameraFar)
+                Debug.WriteLine(_camera.Position);
+                if (_cameraZ <= _cameraNear || _cameraZ >= _cameraFar)
                 {
                     _cameraMove = 0;
+                    OnLayoutUpdated();
                 }
             }
-
+            
         }
 
         private void UserControl_LayoutUpdated(object sender, EventArgs e)
         {
+            OnLayoutUpdated();
+        }
+
+        private void OnLayoutUpdated()
+        {
+            //Debug.WriteLine("OnLayoutUpdated");
             GeneralTransform transform = cubePanel.TransformToVisual(Application.Current.RootVisual as UIElement);
-            _cubeCenter = transform.Transform(new Point(cubePanel.Width/2, cubePanel.Height/2));
+            _cubeCenter = transform.Transform(new Point(cubePanel.Width / 2, cubePanel.Height / 2));
             _cubeSize = System.Math.Min(cubePanel.Width, cubePanel.Height);
 
             _rubikscube.ViewMatrix = MathConverter.ToMatrix(ViewMatrix);
@@ -199,9 +205,20 @@ namespace RubiksCubeSL
 
 
         bool _isLeftButtonPressed = false;
+        bool _isDrag = false;
         private void UserControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             _isLeftButtonPressed = true;
+            _isDrag = false;
+            if (Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                _isDrag = true;
+                _previousPosition2D = e.GetPosition(_viewport);
+                _previousPosition3D = ProjectToTrackball(
+                    _viewport.ActualWidth,
+                    _viewport.ActualHeight,
+                    _previousPosition2D);
+            }
             _rubikscube.Interaction.StartTrack(MathConverter.ToPoint2(e.GetPosition(_viewport)));
         }
 
@@ -278,7 +295,15 @@ namespace RubiksCubeSL
         {
             if (_isLeftButtonPressed)
             {
-                _rubikscube.Interaction.Track(MathConverter.ToPoint2(e.GetPosition(_viewport)));
+                if (_isDrag && Keyboard.Modifiers == ModifierKeys.Control)
+                {
+                    //drag
+                    Point currentPosition = e.GetPosition(_viewport);
+                    Track(currentPosition);
+                    _previousPosition2D = currentPosition;
+                }
+                else
+                    _rubikscube.Interaction.Track(MathConverter.ToPoint2(e.GetPosition(_viewport)));
             }
             else
             {
@@ -302,10 +327,29 @@ namespace RubiksCubeSL
             }
         }
 
+        void ResetCamera()
+        {
+            _cameraZ = _cameraNear; _cameraMove = 0;
+            _camera.Position = new Point3D(0, 0, _cameraNear); //60
+            _camera.LookDirection = new Vector3D(0, 0, -1);
+            _camera.UpDirection = new Vector3D(0, 1, 0);
+            _camera.FieldOfView = 80;
+
+            _cameraRotate = RotateCamera(new Vector3(0, 1, 0), Math.PI / 6);
+            Vector3 axis = new Vector3(1, 0, 0); axis = Vector3.Transform(axis, _cameraRotate);
+            _cameraRotate *= RotateCamera(axis, -Math.PI / 6);
+
+        }
         void ResetUI()
         {
-            _steps = 0; tbSteps.Text = _steps.ToString();
+            tbSteps.Text = "0";
             tbCubeOps.Text = string.Empty;
+
+            ResetCamera();
+
+            btnUnfold.Content = "Unfold";
+            //_rubikscube.ViewPoint = MathConverter.ToPoint3(_camera.Position);
+            _viewport.UpdateLayout();
         }
 
         private void btnSolved_Click(object sender, RoutedEventArgs e)
@@ -317,13 +361,14 @@ namespace RubiksCubeSL
         private void btnRandom_Click(object sender, RoutedEventArgs e)
         {
             _rubikscube.Random();
-            ResetUI();
+            if(!_rubikscube.Unfolded)
+                ResetUI();
         }
 
         private void btnUnfold_Click(object sender, RoutedEventArgs e)
         {
             _rubikscube.Unfold(30);
-            double z = 0;
+            
             if (_rubikscube.Unfolded)
             {
                 //z = 120;
@@ -337,6 +382,69 @@ namespace RubiksCubeSL
                 _cameraMove = -2;
                 btnUnfold.Content = "Unfold";
             }
+            
+
+        }
+
+
+
+        private AxisAngleRotation3D _rotation = new AxisAngleRotation3D();
+        private Vector3D _previousPosition3D = new Vector3D(0, 0, 1);
+        private Point _previousPosition2D;
+        private double AngleBetween(Vector3D vector1, Vector3D vector2)
+        {
+            double num;
+            vector1.Normalize();
+            vector2.Normalize();
+            if (Vector3D.DotProduct(vector1, vector2) < 0.0)
+            {
+                Vector3D vectord2 = -vector1 - vector2;
+                num = 3.1415926535897931 - (2.0 * Math.Asin(vectord2.Length / 2.0));
+            }
+            else
+            {
+                Vector3D vectord = vector1 - vector2;
+                num = 2.0 * Math.Asin(vectord.Length / 2.0);
+            }
+            return num;// *57.295779513082323;
+        }
+
+
+
+
+        private void Track(Point currentPosition)
+        {
+            Vector3D currentPosition3D = ProjectToTrackball(
+                _viewport.ActualWidth, _viewport.ActualHeight, currentPosition);
+            Vector3D axis3d = Vector3D.CrossProduct(_previousPosition3D, currentPosition3D);
+            double angle = AngleBetween(_previousPosition3D, currentPosition3D);
+            Vector3 axis = new Vector3(axis3d.X, axis3d.Y, axis3d.Z);
+            axis = Vector3.Transform(axis, _cameraRotate);
+            CMatrix m = RotateCamera(axis, -angle);
+            //_cameraRotate = m * _cameraRotate;
+            _cameraRotate *= m;
+            OnLayoutUpdated();
+            _previousPosition3D = currentPosition3D;
+        }
+
+
+        private Vector3D ProjectToTrackball(double width, double height, Point point)
+        {
+            double x = point.X / (width / 2);    // Scale so bounds map to [0,0] - [2,2]
+            double y = point.Y / (height / 2);
+
+            x = x - 1;                           // Translate 0,0 to the center
+            y = 1 - y;                           // Flip so +Y is up instead of down
+
+            double z2 = 1 - x * x - y * y;       // z^2 = 1 - x^2 - y^2
+            double z = z2 > 0 ? Math.Sqrt(z2) : 0;
+
+            return new Vector3D(x, y, z);
+        }
+
+        private void btnUndo_Click(object sender, RoutedEventArgs e)
+        {
+            _rubikscube.Undo();
         }
 
     }

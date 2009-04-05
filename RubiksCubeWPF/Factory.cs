@@ -58,14 +58,37 @@ namespace RubiksCubeWPF
 
         }
 
-        public Knoics.Math.Matrix GetTransform()
+        public CMatrix Transform
         {
-            return MathConverter.ToMatrix(_visualModel.Transform.Value);
+            get
+            {
+                return MathConverter.ToMatrix(_visualModel.Transform.Value);
+            }
         }
 
-        public void Transform(Knoics.Math.Matrix matrix)
+        public void DoTransform(CMatrix matrix, bool isFromSaved)
         {
-            throw new NotImplementedException();
+            Matrix3D m = MathConverter.ToMatrix3D(matrix);
+            if (isFromSaved)
+                _visualModel.Transform = new MatrixTransform3D(Matrix3D.Multiply(m, _savedTransform));// m * _model.Transform;
+            else
+                _visualModel.Transform = new MatrixTransform3D(Matrix3D.Multiply(m, _visualModel.Transform.Value));// m * _model.Transform;
+
+        }
+
+        public void Reset()
+        {
+            _visualModel.Transform = new MatrixTransform3D(Matrix3D.Identity);
+        }
+
+        private Matrix3D _savedTransform;
+        public void Save()
+        {
+            _savedTransform = _visualModel.Transform.Value;
+        }
+        public void Restore()
+        {
+            _visualModel.Transform = new MatrixTransform3D(_savedTransform);
         }
 
         #endregion
@@ -276,7 +299,7 @@ namespace RubiksCubeWPF
             _geometry.Transform = new MatrixTransform3D(_savedTransform);
         }
 
-        public void Transform(CMatrix matrix, bool isFromSaved)
+        public void DoTransform(CMatrix matrix, bool isFromSaved)
         {
             Matrix3D m = MathConverter.ToMatrix3D(matrix);
             if (isFromSaved)
@@ -286,9 +309,12 @@ namespace RubiksCubeWPF
 
         }
 
-        public CMatrix GetTransform()
+        public CMatrix Transform
         {
-            return MathConverter.ToMatrix(_geometry.Transform.Value);
+            get
+            {
+                return MathConverter.ToMatrix(_geometry.Transform.Value);
+            }
         }
         #endregion
     }

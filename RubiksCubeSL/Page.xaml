@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
     Width="800" Height="600"  Loaded="UserControl_Loaded" LayoutUpdated="UserControl_LayoutUpdated"
     MouseLeftButtonDown="UserControl_MouseLeftButtonDown" MouseLeftButtonUp="UserControl_MouseLeftButtonUp"
+    
     MouseMove="UserControl_MouseMove" 
     >
     <Grid x:Name="LayoutRoot" Background="#A4A89C">
@@ -20,6 +21,7 @@
 				<ColumnDefinition Width="40"/>
 				<ColumnDefinition Width="100"/>
 				<ColumnDefinition Width="100"/>
+				<ColumnDefinition Width="100"/>
 				<ColumnDefinition Width="*"/>
 			</Grid.ColumnDefinitions>
 			<Grid.RowDefinitions>
@@ -31,9 +33,10 @@
 			<Button Width="100" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="2" Name="btnRandom" Content="Show Random" Click="btnRandom_Click"/>
 			<Button Width="100" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="3" Name="btnSolved" Content="Show Solved" Click="btnSolved_Click"/>
 			<Button Width="100" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="4" Name="btnUnfold" Content="Unfold" Click="btnUnfold_Click"/>
+			<Button Width="100" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="5" Name="btnUndo" Content="Undo" Click="btnUndo_Click"/>
 
 			<TextBlock Grid.Row="1" Grid.Column="0" Foreground="White" Margin="5,5,5,5" Name="lbCubeOps" Width="Auto" Text="Seqs:"/>
-			<TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" Foreground="White" Margin="5,5,5,5" Name="tbCubeOps" Width="Auto"/>
+			<TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="5" Foreground="White" Margin="5,5,5,5" Name="tbCubeOps" Width="Auto"/>
 			
 		</Grid> 
 		<Grid x:Name="cubePanel" Grid.Row="1" Width="800" Height="540" ></Grid>
