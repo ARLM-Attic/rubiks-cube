@@ -131,7 +131,7 @@ namespace RubiksCubeSL
             
             
             CubeConfiguration.Factory = new Factory();
-            _rubikscube = RubiksCube.CreateRubiksCube(new Point3(), 10);
+            _rubikscube = RubiksCube.CreateRubiksCube(new Vector3D(), 3, 10);
             ModelVisual3D model = ((CubeModel)_rubikscube.Model).ModelVisual;
             viewport.Children.Add(model);
 
@@ -198,9 +198,9 @@ namespace RubiksCubeSL
             _cubeCenter = transform.Transform(new Point(cubePanel.Width / 2, cubePanel.Height / 2));
             _cubeSize = System.Math.Min(cubePanel.Width, cubePanel.Height);
 
-            _rubikscube.ViewMatrix = MathConverter.ToMatrix(ViewMatrix);
-            _rubikscube.InverseProjectionMatrix = MathConverter.ToMatrix(_viewport.ScreenToViewTransform);
-            _rubikscube.ViewPoint = MathConverter.ToPoint3(_camera.Position);
+            _rubikscube.ViewMatrix = ViewMatrix;
+            _rubikscube.InverseProjectionMatrix = _viewport.ScreenToViewTransform;
+            _rubikscube.ViewPoint = _camera.Position;
         }
 
 
@@ -219,7 +219,7 @@ namespace RubiksCubeSL
                     _viewport.ActualHeight,
                     _previousPosition2D);
             }
-            _rubikscube.Interaction.StartTrack(MathConverter.ToPoint2(e.GetPosition(_viewport)));
+            _rubikscube.Interaction.StartTrack(e.GetPosition(_viewport));
         }
 
 
@@ -303,7 +303,7 @@ namespace RubiksCubeSL
                     _previousPosition2D = currentPosition;
                 }
                 else
-                    _rubikscube.Interaction.Track(MathConverter.ToPoint2(e.GetPosition(_viewport)));
+                    _rubikscube.Interaction.Track(e.GetPosition(_viewport));
             }
             else
             {
@@ -314,7 +314,7 @@ namespace RubiksCubeSL
             }
             
             HitResult result;
-            bool hit = _rubikscube.HitTest(MathConverter.ToPoint2(e.GetPosition(_viewport)), false, out result);
+            bool hit = _rubikscube.HitTest(e.GetPosition(_viewport), false, out result);
             if (hit)
             {
                 if (this.Cursor != Cursors.Hand)
@@ -371,19 +371,14 @@ namespace RubiksCubeSL
             
             if (_rubikscube.Unfolded)
             {
-                //z = 120;
-                // to 2:
                 _cameraMove = 2;
                 btnUnfold.Content = "Fold";
             }
             else
             {
-                //z = 60;
                 _cameraMove = -2;
                 btnUnfold.Content = "Unfold";
             }
-            
-
         }
 
 

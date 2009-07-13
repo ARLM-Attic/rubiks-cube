@@ -1,0 +1,123 @@
+﻿<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{561C3D13-F8AB-4FBF-81C1-BD6522397539}</ProjectGuid>
+    <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Knoics</RootNamespace>
+    <AssemblyName>Knoics.SL</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <SilverlightApplication>false</SilverlightApplication>
+    <ValidateXaml>true</ValidateXaml>
+    <ThrowErrorsInValidation>false</ThrowErrorsInValidation>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Bin\Release</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Kit3D, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Kit3D.dll</HintPath>
+    </Reference>
+    <Reference Include="mscorlib">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="system">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Core">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Windows" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Interactive\Camera.cs" />
+    <Compile Include="Interactive\Rotation.cs" />
+    <Compile Include="Interactive\Viewport.cs" />
+    <Compile Include="Math\Angle.cs" />
+    <Compile Include="Math\Axis.cs" />
+    <Compile Include="Math\BoundingBox.cs" />
+    <Compile Include="Math\Ext3D.cs" />
+    <Compile Include="Math\Plane.cs" />
+    <Compile Include="Math\Point3.cs" />
+    <Compile Include="Math\Group.cs" />
+    <Compile Include="Math\Matrix.cs" />
+    <Compile Include="Math\Point2.cs" />
+    <Compile Include="Math\Quaternion.cs" />
+    <Compile Include="Math\Ray.cs" />
+    <Compile Include="Math\Size.cs" />
+    <Compile Include="Math\Vector2.cs" />
+    <Compile Include="Math\Vector3.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RubiksCube\Animator.cs" />
+    <Compile Include="RubiksCube\AnimContext.cs" />
+    <Compile Include="RubiksCube\BasicOp.cs" />
+    <Compile Include="RubiksCube\CubeConfiguration.cs" />
+    <Compile Include="RubiksCube\CubeInteraction.cs" />
+    <Compile Include="RubiksCube\CubeOperation.cs" />
+    <Compile Include="RubiksCube\Cubicle.cs" />
+    <Compile Include="RubiksCube\CubicleFace.cs" />
+    <Compile Include="RubiksCube\Cubie.cs" />
+    <Compile Include="RubiksCube\CubieFace.cs" />
+    <Compile Include="RubiksCube\IFactory.cs" />
+    <Compile Include="RubiksCube\IMesh.cs" />
+    <Compile Include="RubiksCube\IModel.cs" />
+    <Compile Include="RubiksCube\Interpreter.cs" />
+    <Compile Include="RubiksCube\RotatableObject.cs" />
+    <Compile Include="RubiksCube\ITransform.cs" />
+    <Compile Include="RubiksCube\RotationDirection.cs" />
+    <Compile Include="RubiksCube\RubiksCube.cs" />
+    <Compile Include="RubiksCube\RubiksCubeType.cs" />
+    <Compile Include="RubiksCube\CubeTransform.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\v3.0\Microsoft.Silverlight.CSharp.targets" Condition="" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{A1591282-1198-4647-A2B1-27E5FF5F6F3B}">
+        <SilverlightProjectProperties />
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

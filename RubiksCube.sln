@@ -1,53 +1,33 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XNALib", "XNALib\XNALib.csproj", "{529AFC57-0A0B-4DAA-B83D-BC0CDEA4F17F}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Library", "Library", "{5E9C34B4-9B15-4980-AF31-300B721D24A1}"
 	ProjectSection(SolutionItems) = preProject
-		Library\InputEventSystem.dll = Library\InputEventSystem.dll
 		Library\Kit3D.dll = Library\Kit3D.dll
-		Library\Knoics.SL.dll = Library\Knoics.SL.dll
-		Library\WindowSystem.dll = Library\WindowSystem.dll
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RubiksCubeWPF", "RubiksCubeWPF\RubiksCubeWPF.csproj", "{28F270D5-7A44-4772-94D3-6857F0525381}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RubiksCubeWindows", "RubiksCube\RubiksCubeWindows.csproj", "{A795AB3D-678A-4ABD-8571-605F69680809}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RubiksCubeSL", "RubiksCubeSL\RubiksCubeSL.csproj", "{FE8F9800-07C3-4A40-94B9-BD10CA0D5008}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RubiksCubeSL.Web", "RubiksCubeSL.Web\RubiksCubeSL.Web.csproj", "{CC2E4AD5-58D5-4C63-99CF-3BB26F75996D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Knoics.SL", "Library\knoics\Knoics.SL.csproj", "{561C3D13-F8AB-4FBF-81C1-BD6522397539}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 8
+		SccNumberOfProjects = 4
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs09.codeplex.com/
 		SccLocalPath0 = .
-		SccProjectUniqueName1 = XNALib\\XNALib.csproj
-		SccProjectName1 = XNALib
-		SccLocalPath1 = XNALib
-		SccProjectUniqueName2 = XNALib\\Content\\Content.contentproj
-		SccProjectTopLevelParentUniqueName2 = XNALib\\XNALib.csproj
-		SccProjectName2 = XNALib/Content
-		SccLocalPath2 = XNALib\\Content
-		SccProjectUniqueName3 = RubiksCubeWPF\\RubiksCubeWPF.csproj
-		SccProjectName3 = RubiksCubeWPF
-		SccLocalPath3 = RubiksCubeWPF
-		SccProjectUniqueName4 = RubiksCube\\RubiksCubeWindows.csproj
-		SccProjectName4 = RubiksCube
-		SccLocalPath4 = RubiksCube
-		SccProjectUniqueName5 = RubiksCube\\Content\\Content.contentproj
-		SccProjectTopLevelParentUniqueName5 = RubiksCube\\RubiksCubeWindows.csproj
-		SccProjectName5 = RubiksCube/Content
-		SccLocalPath5 = RubiksCube\\Content
-		SccProjectUniqueName6 = RubiksCubeSL\\RubiksCubeSL.csproj
-		SccProjectName6 = RubiksCubeSL
-		SccLocalPath6 = RubiksCubeSL
-		SccProjectUniqueName7 = RubiksCubeSL.Web\\RubiksCubeSL.Web.csproj
-		SccProjectName7 = RubiksCubeSL.Web
-		SccLocalPath7 = RubiksCubeSL.Web
+		SccProjectUniqueName1 = RubiksCubeSL\\RubiksCubeSL.csproj
+		SccProjectName1 = RubiksCubeSL
+		SccLocalPath1 = RubiksCubeSL
+		SccProjectUniqueName2 = RubiksCubeSL.Web\\RubiksCubeSL.Web.csproj
+		SccProjectName2 = RubiksCubeSL.Web
+		SccLocalPath2 = RubiksCubeSL.Web
+		SccProjectUniqueName3 = Library\\knoics\\Knoics.SL.csproj
+		SccProjectTopLevelParentUniqueName3 = RubiksCube.sln
+		SccProjectName3 = Library/knoics
+		SccLocalPath3 = Library\\knoics
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,36 +38,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{529AFC57-0A0B-4DAA-B83D-BC0CDEA4F17F}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{529AFC57-0A0B-4DAA-B83D-BC0CDEA4F17F}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{529AFC57-0A0B-4DAA-B83D-BC0CDEA4F17F}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{529AFC57-0A0B-4DAA-B83D-BC0CDEA4F17F}.Debug|x86.ActiveCfg = Debug|x86
-		{529AFC57-0A0B-4DAA-B83D-BC0CDEA4F17F}.Debug|x86.Build.0 = Debug|x86
-		{529AFC57-0A0B-4DAA-B83D-BC0CDEA4F17F}.Release|Any CPU.ActiveCfg = Release|x86
-		{529AFC57-0A0B-4DAA-B83D-BC0CDEA4F17F}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{529AFC57-0A0B-4DAA-B83D-BC0CDEA4F17F}.Release|Mixed Platforms.Build.0 = Release|x86
-		{529AFC57-0A0B-4DAA-B83D-BC0CDEA4F17F}.Release|x86.ActiveCfg = Release|x86
-		{529AFC57-0A0B-4DAA-B83D-BC0CDEA4F17F}.Release|x86.Build.0 = Release|x86
-		{28F270D5-7A44-4772-94D3-6857F0525381}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{28F270D5-7A44-4772-94D3-6857F0525381}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{28F270D5-7A44-4772-94D3-6857F0525381}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{28F270D5-7A44-4772-94D3-6857F0525381}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{28F270D5-7A44-4772-94D3-6857F0525381}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{28F270D5-7A44-4772-94D3-6857F0525381}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{28F270D5-7A44-4772-94D3-6857F0525381}.Release|Any CPU.Build.0 = Release|Any CPU
-		{28F270D5-7A44-4772-94D3-6857F0525381}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{28F270D5-7A44-4772-94D3-6857F0525381}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{28F270D5-7A44-4772-94D3-6857F0525381}.Release|x86.ActiveCfg = Release|Any CPU
-		{A795AB3D-678A-4ABD-8571-605F69680809}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{A795AB3D-678A-4ABD-8571-605F69680809}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{A795AB3D-678A-4ABD-8571-605F69680809}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{A795AB3D-678A-4ABD-8571-605F69680809}.Debug|x86.ActiveCfg = Debug|x86
-		{A795AB3D-678A-4ABD-8571-605F69680809}.Debug|x86.Build.0 = Debug|x86
-		{A795AB3D-678A-4ABD-8571-605F69680809}.Release|Any CPU.ActiveCfg = Release|x86
-		{A795AB3D-678A-4ABD-8571-605F69680809}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{A795AB3D-678A-4ABD-8571-605F69680809}.Release|Mixed Platforms.Build.0 = Release|x86
-		{A795AB3D-678A-4ABD-8571-605F69680809}.Release|x86.ActiveCfg = Release|x86
-		{A795AB3D-678A-4ABD-8571-605F69680809}.Release|x86.Build.0 = Release|x86
 		{FE8F9800-07C3-4A40-94B9-BD10CA0D5008}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FE8F9800-07C3-4A40-94B9-BD10CA0D5008}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE8F9800-07C3-4A40-94B9-BD10CA0D5008}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -108,20 +58,21 @@ Global
 		{CC2E4AD5-58D5-4C63-99CF-3BB26F75996D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{CC2E4AD5-58D5-4C63-99CF-3BB26F75996D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{CC2E4AD5-58D5-4C63-99CF-3BB26F75996D}.Release|x86.ActiveCfg = Release|Any CPU
-		{A6079D41-0CE0-4121-99DA-FA9579086482}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{A6079D41-0CE0-4121-99DA-FA9579086482}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{A6079D41-0CE0-4121-99DA-FA9579086482}.Debug|x86.ActiveCfg = Debug|x86
-		{A6079D41-0CE0-4121-99DA-FA9579086482}.Release|Any CPU.ActiveCfg = Release|x86
-		{A6079D41-0CE0-4121-99DA-FA9579086482}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{A6079D41-0CE0-4121-99DA-FA9579086482}.Release|x86.ActiveCfg = Release|x86
-		{1C1AAE43-92AB-4972-93EC-4D6A8A648830}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{1C1AAE43-92AB-4972-93EC-4D6A8A648830}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{1C1AAE43-92AB-4972-93EC-4D6A8A648830}.Debug|x86.ActiveCfg = Debug|x86
-		{1C1AAE43-92AB-4972-93EC-4D6A8A648830}.Release|Any CPU.ActiveCfg = Release|x86
-		{1C1AAE43-92AB-4972-93EC-4D6A8A648830}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{1C1AAE43-92AB-4972-93EC-4D6A8A648830}.Release|x86.ActiveCfg = Release|x86
+		{561C3D13-F8AB-4FBF-81C1-BD6522397539}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{561C3D13-F8AB-4FBF-81C1-BD6522397539}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{561C3D13-F8AB-4FBF-81C1-BD6522397539}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{561C3D13-F8AB-4FBF-81C1-BD6522397539}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{561C3D13-F8AB-4FBF-81C1-BD6522397539}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{561C3D13-F8AB-4FBF-81C1-BD6522397539}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{561C3D13-F8AB-4FBF-81C1-BD6522397539}.Release|Any CPU.Build.0 = Release|Any CPU
+		{561C3D13-F8AB-4FBF-81C1-BD6522397539}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{561C3D13-F8AB-4FBF-81C1-BD6522397539}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{561C3D13-F8AB-4FBF-81C1-BD6522397539}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{561C3D13-F8AB-4FBF-81C1-BD6522397539} = {5E9C34B4-9B15-4980-AF31-300B721D24A1}
 	EndGlobalSection
 EndGlobal
