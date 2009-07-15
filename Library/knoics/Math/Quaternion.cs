@@ -13,7 +13,7 @@ using System.Net;
 
 namespace Knoics.Math
 {
-    public struct Quaternion
+    internal struct Quaternion
     {
         public double X;
         public double Y;
@@ -88,4 +88,5 @@ namespace Knoics.Math
         }
 
     }
+     
 }

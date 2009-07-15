@@ -72,6 +72,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FSharp.Core, Version=1.9.6.16, Culture=neutral, PublicKeyToken=99cf57b64b44bf93, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Program Files\FSharp-1.9.6.16\Silverlight\2.0\bin\FSharp.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Kit3D, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Library\Kit3D.dll</HintPath>
@@ -143,6 +147,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Knoics\Knoics.fsproj">
+      <Project>{AC1E5901-643E-4DE1-B6B9-00EC929E55C2}</Project>
+      <Name>Knoics</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Library\knoics\Knoics.SL.csproj">
       <Project>{561C3D13-F8AB-4FBF-81C1-BD6522397539}</Project>
       <Name>Knoics.SL</Name>

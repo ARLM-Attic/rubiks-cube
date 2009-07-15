@@ -46,6 +46,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FSharp.Core, Version=1.9.6.16, Culture=neutral, PublicKeyToken=99cf57b64b44bf93, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files\FSharp-1.9.6.16\Silverlight\2.0\bin\FSharp.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Kit3D, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Kit3D.dll</HintPath>
@@ -100,6 +104,12 @@
     <Compile Include="RubiksCube\RubiksCube.cs" />
     <Compile Include="RubiksCube\RubiksCubeType.cs" />
     <Compile Include="RubiksCube\CubeTransform.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Knoics\Knoics.fsproj">
+      <Project>{AC1E5901-643E-4DE1-B6B9-00EC929E55C2}</Project>
+      <Name>Knoics</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\v3.0\Microsoft.Silverlight.CSharp.targets" Condition="" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

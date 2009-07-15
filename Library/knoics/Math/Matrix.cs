@@ -67,7 +67,7 @@ namespace Knoics.Math
             this._isNotKnownToBeIdentity = true;
         }
 
-        public static Matrix CreateFromQuaternion(Quaternion quaternion)
+        internal static Matrix CreateFromQuaternion(Quaternion quaternion)
         {
             Matrix matrix = new Matrix();
             double num9 = quaternion.X * quaternion.X;

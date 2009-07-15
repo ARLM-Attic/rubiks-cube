@@ -14,6 +14,7 @@ using System.Diagnostics;
 using Knoics.Math;
 using Kit3D.Windows.Media.Media3D;
 using Knoics.Interactive;
+using Knoics.Math;
 
 namespace Knoics.RubiksCube
 {

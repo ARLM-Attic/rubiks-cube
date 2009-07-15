@@ -5,6 +5,7 @@ using System.Windows;
 
 namespace Knoics.Math
 {
+#if PURECSHARP
     public struct Ray3D
     {
         private Point3D origin;
@@ -57,7 +58,8 @@ namespace Knoics.Math
             this.W = w;
         }
 
-        public Quaternion3D(Vector3D axisOfRotation, float angleInDegrees)
+        /*
+        public Quaternion3D(Vector3D axisOfRotation, double angleInDegrees)
         {
             angleInDegrees = angleInDegrees % 360.0F;
             double num2 = angleInDegrees * 0.017453292519943295F;
@@ -73,7 +75,7 @@ namespace Knoics.Math
             this.W = System.Math.Cos(0.5 * num2);
             //this._isNotDistinguishedIdentity = true;
         }
-
+        */
 
         public static Quaternion3D CreateFromAxisAngle(Vector3D axis, double angle)
         {
@@ -112,6 +114,181 @@ namespace Knoics.Math
 
     }
 
+    public struct BoundingBox3D
+    {
+        public Vector3D Min { get; set; }
+        public Vector3D Max { get; set; }
+        public BoundingBox3D(Vector3D min, Vector3D max)
+            : this()
+        {
+            Min = min;
+            Max = max;
+        }
+
+        public double? Intersects(Ray3D ray)
+        {
+            double d = 0f;
+            double maxValue = double.MaxValue;
+            if (System.Math.Abs(ray.Direction.X) < 1E-06f)
+            {
+                if ((ray.Origin.X < this.Min.X) || (ray.Origin.X > this.Max.X))
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                double vx = 1f / ray.Direction.X;
+                double t1 = (this.Min.X - ray.Origin.X) * vx;
+                double t2 = (this.Max.X - ray.Origin.X) * vx;
+                if (t1 > t2)
+                {
+                    double num14 = t1;
+                    t1 = t2;
+                    t2 = num14;
+                }
+                d = (t1 > d) ? t1 : d;
+                maxValue = (t2 > maxValue) ? maxValue : t2;
+                if (d > maxValue)
+                {
+                    return null;
+                }
+            }
+            if (System.Math.Abs(ray.Direction.Y) < 1E-06f)
+            {
+                if ((ray.Origin.Y < this.Min.Y) || (ray.Origin.Y > this.Max.Y))
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                double vy = 1f / ray.Direction.Y;
+                double ty1 = (this.Min.Y - ray.Origin.Y) * vy;
+                double ty2 = (this.Max.Y - ray.Origin.Y) * vy;
+                if (ty1 > ty2)
+                {
+                    double num13 = ty1;
+                    ty1 = ty2;
+                    ty2 = num13;
+                }
+                d = (ty1 > d) ? ty1 : d;
+                maxValue = (ty2 > maxValue) ? maxValue : ty2;
+                if (d > maxValue)
+                {
+                    return null;
+                }
+            }
+            if (System.Math.Abs(ray.Direction.Z) < 1E-06f)
+            {
+                if ((ray.Origin.Z < this.Min.Z) || (ray.Origin.Z > this.Max.Z))
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                double vz = 1f / ray.Direction.Z;
+                double tz1 = (this.Min.Z - ray.Origin.Z) * vz;
+                double tz2 = (this.Max.Z - ray.Origin.Z) * vz;
+                if (tz1 > tz2)
+                {
+                    double num12 = tz1;
+                    tz1 = tz2;
+                    tz2 = num12;
+                }
+                d = (tz1 > d) ? tz1 : d;
+                maxValue = (tz2 > maxValue) ? maxValue : tz2;
+                if (d > maxValue)
+                {
+                    return null;
+                }
+            }
+            return new double?(d);
+        }
+
+
+    }
+
+
+    public struct Plane3D
+    {
+        private Vector3D _normal;
+        private double _d;
+
+        public Plane3D(double a, double b, double c, double d)
+        {
+            this._normal = new Vector3D(a, b, c);
+            this._normal.Normalize();
+            this._d = d;
+        }
+
+        public Plane3D(Point3D p0, Point3D p1, Point3D p2)
+        {
+            Vector3D v1 = p1 - p0;
+            Vector3D v2 = p2 - p0;
+            this._normal = Vector3D.CrossProduct(v1, v2);
+            this._normal.Normalize();
+            this._d = -(this._normal.X * p0.X + this._normal.Y * p0.Y + this._normal.Z * p0.Z);
+        }
+
+        public double D
+        {
+            get
+            {
+                return this._d;
+            }
+        }
+
+        public Vector3D Normal
+        {
+            get
+            {
+                return this._normal;
+            }
+        }
+
+        public double DistanceToPoint(Point3 point)
+        {
+            return point.X * this._normal.X +
+                   point.Y * this._normal.Y +
+                   point.Z * this._normal.Z +
+                   this._d;
+        }
+
+        public double? Intersects(Ray3D ray)
+        {
+            double num2 = ((this.Normal.X * ray.Direction.X) + (this.Normal.Y * ray.Direction.Y)) + (this.Normal.Z * ray.Direction.Z);
+            if (System.Math.Abs(num2) < 1E-12f)
+            {
+                return null;
+            }
+            double num3 = ((this.Normal.X * ray.Origin.X) + (this.Normal.Y * ray.Origin.Y)) + (this.Normal.Z * ray.Origin.Z);
+            double d = (-this.D - num3) / num2;
+            if (d < 0f)
+            {
+                if (d < -1E-12f)
+                {
+                    return null;
+                }
+                d = 0;
+            }
+            return new double?(d);
+        }
+
+        public bool Intersect(Ray3D ray, out Point3D intersectionPoint)
+        {
+            double? d = Intersects(ray);
+            intersectionPoint = new Point3D(double.NaN, double.NaN, double.NaN);
+            if (d != null)
+            {
+                intersectionPoint = ray.Origin + (double)d * ray.Direction;
+            }
+            return (d != null);
+        }
+
+
+    }
 
     public class Ext3D
     {
@@ -122,6 +299,8 @@ namespace Knoics.Math
         public static Vector3D UnitX { get { return _unitX; } }
         public static Vector3D UnitY { get { return _unitY; } }
         public static Vector3D UnitZ { get { return _unitZ; } }
+
+
 
         public static double AngleBetween(Vector3D vector1, Vector3D vector2)
         {
@@ -291,202 +470,12 @@ namespace Knoics.Math
 
             //Matrix worldToLocal = Matrix.Invert(world);
             Vector3D from = Ext3D.Transform((Vector3D)viewpoint, worldToLocal);
-
-            return new Ray3D((Point3D)from, to - from);
+            Vector3D d = to - from; d.Normalize();
+            return new Ray3D((Point3D)from, d);
         }
 
     }
 
+#endif
 
-    public struct BoundingBox3D
-    {
-        public Vector3D Min { get; set; }
-        public Vector3D Max { get; set; }
-        public BoundingBox3D(Vector3D min, Vector3D max):this()
-        {
-            Min = min;
-            Max = max;
-        }
-
-        public double? Intersects(Ray3D ray)
-        {
-            double d = 0f;
-            double maxValue = double.MaxValue;
-            if (System.Math.Abs(ray.Direction.X) < 1E-06f)
-            {
-                if ((ray.Origin.X < this.Min.X) || (ray.Origin.X > this.Max.X))
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                double vx = 1f / ray.Direction.X;
-                double t1 = (this.Min.X - ray.Origin.X) * vx;
-                double t2 = (this.Max.X - ray.Origin.X) * vx;
-                if (t1 > t2)
-                {
-                    double num14 = t1;
-                    t1 = t2;
-                    t2 = num14;
-                }
-                d = (t1 > d) ? t1 : d;
-                maxValue = (t2 > maxValue) ? maxValue : t2;
-                if (d > maxValue)
-                {
-                    return null;
-                }
-            }
-            if (System.Math.Abs(ray.Direction.Y) < 1E-06f)
-            {
-                if ((ray.Origin.Y < this.Min.Y) || (ray.Origin.Y > this.Max.Y))
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                double vy = 1f / ray.Direction.Y;
-                double ty1 = (this.Min.Y - ray.Origin.Y) * vy;
-                double ty2 = (this.Max.Y - ray.Origin.Y) * vy;
-                if (ty1 > ty2)
-                {
-                    double num13 = ty1;
-                    ty1 = ty2;
-                    ty2 = num13;
-                }
-                d = (ty1 > d) ? ty1 : d;
-                maxValue = (ty2 > maxValue)? maxValue:ty2;
-                if (d > maxValue)
-                {
-                    return null;
-                }
-            }
-            if (System.Math.Abs(ray.Direction.Z) < 1E-06f)
-            {
-                if ((ray.Origin.Z < this.Min.Z) || (ray.Origin.Z > this.Max.Z))
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                double vz = 1f / ray.Direction.Z;
-                double tz1 = (this.Min.Z - ray.Origin.Z) * vz;
-                double tz2 = (this.Max.Z - ray.Origin.Z) * vz;
-                if (tz1 > tz2)
-                {
-                    double num12 = tz1;
-                    tz1 = tz2;
-                    tz2 = num12;
-                }
-                d = (tz1>d)? tz1 : d;
-                maxValue = (tz2>maxValue)? maxValue: tz2;
-                if (d > maxValue)
-                {
-                    return null;
-                }
-            }
-            return new double?(d);
-        }
-
-
-    }
-
-
-    public struct Plane3D
-    {
-        private Vector3D _normal;
-        private double _d;
-
-        public Plane3D(double a, double b, double c, double d)
-        {
-            this._normal = new Vector3D(a, b, c);
-            this._normal.Normalize();
-            this._d = d;
-        }
-
-        public Plane3D(Point3D p0, Point3D p1, Point3D p2)
-        {
-            Vector3D v1 = p1 - p0;
-            Vector3D v2 = p2 - p0;
-            this._normal = Vector3D.CrossProduct(v1, v2);
-            this._normal.Normalize();
-            this._d = -(this._normal.X * p0.X + this._normal.Y * p0.Y + this._normal.Z * p0.Z);
-        }
-
-        public double D
-        {
-            get
-            {
-                return this._d;
-            }
-        }
-
-        public Vector3D Normal
-        {
-            get
-            {
-                return this._normal;
-            }
-        }
-
-        public double DistanceToPoint(Point3 point)
-        {
-            return point.X * this._normal.X +
-                   point.Y * this._normal.Y +
-                   point.Z * this._normal.Z +
-                   this._d;
-        }
-
-        public double? Intersects(Ray3D ray)
-        {
-            double num2 = ((this.Normal.X * ray.Direction.X) + (this.Normal.Y * ray.Direction.Y)) + (this.Normal.Z * ray.Direction.Z);
-            if (System.Math.Abs(num2) < 1E-12f)
-            {
-                return null;
-            }
-            double num3 = ((this.Normal.X * ray.Origin.X) + (this.Normal.Y * ray.Origin.Y)) + (this.Normal.Z * ray.Origin.Z);
-            double d = (-this.D - num3) / num2;
-            if (d < 0f)
-            {
-                if (d < -1E-12f)
-                {
-                    return null;
-                }
-                d = 0;
-            }
-            return new double?(d);
-        }
-
-        public bool Intersect(Ray3D ray, out Point3D intersectionPoint)
-        {
-            /*
-            double d = Vector3.Dot(this.Normal, ray.Direction);
-            if ((d > -1e-12) && (d < 1e-12))
-            {
-                intersectionPoint = new Point3(double.NaN, double.NaN, double.NaN);
-                return false;
-            }
-
-            double t = -(Vector3.Dot((Vector3)ray.Origin, this.Normal) + this.D) / d;
-            if (t < 0)
-            {
-                intersectionPoint = new Point3(double.NaN, double.NaN, double.NaN);
-                return false;
-            }
-            intersectionPoint = ray.Origin + t * ray.Direction;
-            return true;
-             */
-            double? d = Intersects(ray);
-            intersectionPoint = new Point3D(double.NaN, double.NaN, double.NaN);
-            if (d != null)
-            {
-                intersectionPoint = ray.Origin + (double)d * ray.Direction;
-            }
-            return (d != null);
-        }
-
-
-    }
 }

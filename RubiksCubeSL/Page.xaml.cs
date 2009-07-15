@@ -18,11 +18,11 @@ using System.Windows.Threading;
 using Knoics.Math;
 using Knoics.RubiksCube;
 using Knoics.Interactive;
-using CMatrix = Knoics.Math.Matrix;
+
 using Kit3D.Windows.Controls;
 using Kit3D.Windows.Media.Media3D;
 using Kit3D.Windows.Media;
-using Quaternion = Kit3D.Windows.Media.Media3D.Quaternion;
+
 using Kit3D.Math;
 using System.Diagnostics;
 
@@ -87,28 +87,29 @@ namespace RubiksCubeSL
             
         }
 
-        private CMatrix RotateCamera(Vector3 axis, double angle)
+        private Matrix3D RotateCamera(Vector3D axis, double angle)
         {
             axis.Normalize();
-            Knoics.Math.Quaternion q = Knoics.Math.Quaternion.CreateFromAxisAngle(axis, angle);
-            CMatrix m  = CMatrix.CreateFromQuaternion(q);
+            Quaternion3D q = Quaternion3D.CreateFromAxisAngle(axis, angle);
+            Matrix3D m  = Ext3D.CreateFromQuaternion(q);
 
             
             
-            Vector3 p = new Vector3(_camera.Position.X, _camera.Position.Y, _camera.Position.Z);//120); //60;
-            p = Vector3.Transform(p, m); _camera.Position = new Point3D(p.X, p.Y, p.Z);
+            Vector3D p = new Vector3D(_camera.Position.X, _camera.Position.Y, _camera.Position.Z);//120); //60;
+            p = Ext3D.Transform(p, m); _camera.Position = new Point3D(p.X, p.Y, p.Z);
 
             
-            Vector3 d = new Vector3(_camera.LookDirection.X, _camera.LookDirection.Y, _camera.LookDirection.Z);
-            d = Vector3.Transform(d, m); _camera.LookDirection = new Vector3D(d.X, d.Y, d.Z);
+            Vector3D d = new Vector3D(_camera.LookDirection.X, _camera.LookDirection.Y, _camera.LookDirection.Z);
+            d = Ext3D.Transform(d, m); _camera.LookDirection = new Vector3D(d.X, d.Y, d.Z);
 
             
-            Vector3 up = new Vector3(_camera.UpDirection.X, _camera.UpDirection.Y, _camera.UpDirection.Z);
-            up = Vector3.Transform(up, m); _camera.UpDirection = new Vector3D(up.X, up.Y, up.Z);
+            Vector3D up = new Vector3D(_camera.UpDirection.X, _camera.UpDirection.Y, _camera.UpDirection.Z);
+            up = Ext3D.Transform(up, m); _camera.UpDirection = new Vector3D(up.X, up.Y, up.Z);
             
             return m;
         }
-        CMatrix _cameraRotate = CMatrix.Identity;
+
+        Matrix3D _cameraRotate = Matrix3D.Identity;
         int _cameraMove = 0;
         int _cameraFar = 120;
         int _cameraNear = 60;
@@ -174,8 +175,8 @@ namespace RubiksCubeSL
             if (_cameraMove != 0)
             {
                 _cameraZ += _cameraMove;
-                Vector3 p = new Vector3(0, 0, _cameraZ);//120); //60;
-                p = Vector3.Transform(p, _cameraRotate); _camera.Position = new Point3D(p.X, p.Y, p.Z);
+                Vector3D p = new Vector3D(0, 0, _cameraZ);//120); //60;
+                p = Ext3D.Transform(p, _cameraRotate); _camera.Position = new Point3D(p.X, p.Y, p.Z);
                 Debug.WriteLine(_camera.Position);
                 if (_cameraZ <= _cameraNear || _cameraZ >= _cameraFar)
                 {
@@ -280,16 +281,6 @@ namespace RubiksCubeSL
         }
 
 
-        Matrix3D ConvertTo3D(CMatrix m)
-        {
-            Matrix3D m3d = new Matrix3D();
-            m3d.M11 = m.M11; m3d.M12 = m.M12; m3d.M13 = m.M13; m3d.M14 = m.M14;
-            m3d.M21 = m.M21; m3d.M22 = m.M22; m3d.M23 = m.M23; m3d.M24 = m.M24;
-            m3d.M31 = m.M31; m3d.M32 = m.M32; m3d.M33 = m.M33; m3d.M34 = m.M34;
-            m3d.OffsetX = m.M41; m3d.OffsetY = m.M42; m3d.OffsetZ = m.M43; m3d.M44 = m.M44;
-            return m3d;
-        }
-
         
         private void UserControl_MouseMove(object sender, MouseEventArgs e)
         {
@@ -335,8 +326,8 @@ namespace RubiksCubeSL
             _camera.UpDirection = new Vector3D(0, 1, 0);
             _camera.FieldOfView = 80;
 
-            _cameraRotate = RotateCamera(new Vector3(0, 1, 0), Math.PI / 6);
-            Vector3 axis = new Vector3(1, 0, 0); axis = Vector3.Transform(axis, _cameraRotate);
+            _cameraRotate = RotateCamera(new Vector3D(0, 1, 0), Math.PI / 6);
+            Vector3D axis = new Vector3D(1, 0, 0); axis = Ext3D.Transform(axis, _cameraRotate);
             _cameraRotate *= RotateCamera(axis, -Math.PI / 6);
 
         }
@@ -413,9 +404,9 @@ namespace RubiksCubeSL
                 _viewport.ActualWidth, _viewport.ActualHeight, currentPosition);
             Vector3D axis3d = Vector3D.CrossProduct(_previousPosition3D, currentPosition3D);
             double angle = AngleBetween(_previousPosition3D, currentPosition3D);
-            Vector3 axis = new Vector3(axis3d.X, axis3d.Y, axis3d.Z);
-            axis = Vector3.Transform(axis, _cameraRotate);
-            CMatrix m = RotateCamera(axis, -angle);
+            Vector3D axis = new Vector3D(axis3d.X, axis3d.Y, axis3d.Z);
+            axis = Ext3D.Transform(axis, _cameraRotate);
+            Matrix3D m = RotateCamera(axis, -angle);
             //_cameraRotate = m * _cameraRotate;
             _cameraRotate *= m;
             OnLayoutUpdated();

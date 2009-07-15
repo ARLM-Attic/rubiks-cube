@@ -16,6 +16,7 @@ using Knoics.Interactive;
 using System.Diagnostics;
 using System.Windows;
 using Kit3D.Windows.Media.Media3D;
+using Microsoft.FSharp.Core;
 
 
 namespace Knoics.RubiksCube
@@ -401,30 +402,31 @@ namespace Knoics.RubiksCube
             hitResult = null;
             Ray3D ray = Ext3D.Unproject(pt, _viewpoint, _model.Transform, _inverseViewMatrix, _inverseProjectionMatrix);
             //Debug.WriteLine(string.Format("ray: {0}", ray));
-            double? d = this.BoundingBox.Intersects(ray);
+            //double? d = this.BoundingBox.Intersects(ray);
+            Option<double> d = this.BoundingBox.Intersects(ray);
             if (!deep)
             {
-                if (d != null)
+                if (Option<double>.get_IsSome(d))
                 {
                     //Debug.WriteLine(string.Format("first ray: {0}, distance:{1}", ray, (double)d));
-                    hitResult = new HitResult() { Distance = (double)d, HitCubicle = null, HitPoint = ray.Origin + (double)d * ray.Direction };
+                    hitResult = new HitResult() { Distance = d.Value, HitCubicle = null, HitPoint = ray.Origin + d.Value * ray.Direction };
                 }
             }
             else
             {
                 List<HitResult> results = new List<HitResult>();
-                if (d != null)
+                if (Option<double>.get_IsSome(d))
                 {
-                    double? d1;
+                    //double? d1;
                     foreach (Cubicle cubicle in _cubicles.Values)
                     {
                         Matrix3D localToWorld = _model.Transform; localToWorld.Invert();// *cubicle.Cubie.Transform;
                         ray = Ext3D.Unproject(pt, _viewpoint, localToWorld, _inverseViewMatrix, _inverseProjectionMatrix);
                         //d1 = cubicle.Cubie.BoundingBox.Intersects(ray);
-                        d1 = cubicle.BoundingBox.Intersects(ray);
-                        if (d1 != null)
+                        Option<double> d1 = cubicle.BoundingBox.Intersects(ray);
+                        if (Option<double>.get_IsSome(d1))
                         {
-                            HitResult result = new HitResult() { Distance = (double)d1, HitCubicle = cubicle, HitPoint = ray.Origin + (double)d1 * ray.Direction };
+                            HitResult result = new HitResult() { Distance = d1.Value, HitCubicle = cubicle, HitPoint = ray.Origin + d1.Value * ray.Direction };
                             results.Add(result);
                         }
                     }
@@ -500,24 +502,27 @@ namespace Knoics.RubiksCube
             switch (axis)
             {
                 case Axis.X:
-                    Plane3D yz = new Plane3D(-1, 0, 0, prevHit.HitPoint.X); Point3D oyz = new Point3D(prevHit.HitPoint.X, 0, 0);
-                    Point3D pyz; yz.Intersect(ray, out pyz); Vector3D from = prevHit.HitPoint - oyz; Vector3D to = pyz - oyz;
+                    Vector3D v = new Vector3D(-1, 0, 0);
+                    Plane3D yz = new Plane3D(v, prevHit.HitPoint.X); Point3D oyz = new Point3D(prevHit.HitPoint.X, 0, 0);
+                    Point3D pyz = yz.Intersect(ray).Item2; Vector3D from = prevHit.HitPoint - oyz; Vector3D to = pyz - oyz;
                     angle =  Ext3D.AngleBetween(from, to);
                     if (Vector3D.DotProduct(Ext3D.UnitX, Vector3D.CrossProduct(from, to)) < 0)
                         angle = -angle;
 
                     break;
                 case Axis.Z:
-                    Plane3D xy = new Plane3D(0, 0, -1, prevHit.HitPoint.Z); Point3D oxy = new Point3D(0, 0, prevHit.HitPoint.Z);
-                    Point3D pxy; xy.Intersect(ray, out pxy); from = prevHit.HitPoint - oxy; to = pxy - oxy;
+                    v = new Vector3D(0, 0, -1);
+                    Plane3D xy = new Plane3D(v, prevHit.HitPoint.Z); Point3D oxy = new Point3D(0, 0, prevHit.HitPoint.Z);
+                    Point3D pxy = xy.Intersect(ray).Item2; from = prevHit.HitPoint - oxy; to = pxy - oxy;
                     angle = Ext3D.AngleBetween(from, to);
                     if (Vector3D.DotProduct(Ext3D.UnitZ, Vector3D.CrossProduct(from, to)) < 0)
                         angle = -angle;
 
                     break;
                 case Axis.Y:
-                    Plane3D zx = new Plane3D(0, -1, 0, prevHit.HitPoint.Y); Point3D ozx = new Point3D(0, prevHit.HitPoint.Y, 0);
-                    Point3D pzx; zx.Intersect(ray, out pzx); from = prevHit.HitPoint - ozx; to = pzx - ozx;
+                    v = new Vector3D(0, -1, 0);
+                    Plane3D zx = new Plane3D(v, prevHit.HitPoint.Y); Point3D ozx = new Point3D(0, prevHit.HitPoint.Y, 0);
+                    Point3D pzx = zx.Intersect(ray).Item2; from = prevHit.HitPoint - ozx; to = pzx - ozx;
                     angle = Ext3D.AngleBetween(from, to);
                     if (Vector3D.DotProduct(Ext3D.UnitY, Vector3D.CrossProduct(from, to)) < 0)
                         angle = -angle;
