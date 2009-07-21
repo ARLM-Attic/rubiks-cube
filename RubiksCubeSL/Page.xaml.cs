@@ -17,7 +17,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using Knoics.Math;
 using Knoics.RubiksCube;
-using Knoics.Interactive;
+//using Knoics.Interactive;
 
 using Kit3D.Windows.Controls;
 using Kit3D.Windows.Media.Media3D;

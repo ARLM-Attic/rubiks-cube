@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text;
 
 using Knoics.Math;
-using Knoics.Interactive;
+//using Knoics.Interactive;
 using System.Diagnostics;
 using System.Windows;
 using Kit3D.Windows.Media.Media3D;

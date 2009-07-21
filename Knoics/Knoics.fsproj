@@ -39,6 +39,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>3</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Kit3D, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null">
       <Name>Kit3D</Name>
@@ -62,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Ext3D.fs" />
     <None Include="Script.fsx" />
+    <Compile Include="Axis.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\FSharp\1.0\Microsoft.FSharp.Targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v3.0\Microsoft.Silverlight.Common.targets" />

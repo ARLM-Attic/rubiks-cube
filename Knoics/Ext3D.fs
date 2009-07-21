@@ -48,14 +48,51 @@ type Quaternion3D(x:double, y:double, z:double, w:double) =
 
 
 
+        
+
 type BoundingBox3D(min:Vector3D, max:Vector3D) as this = 
+
+    let intersect(rayDir:double, rayOrigin, boxMin, boxMax, d) =
+        let mutable maxValue = double.MaxValue
+        if (System.Math.Abs(rayDir) < 1E-06 && ((rayOrigin < boxMin) || (rayOrigin > boxMax))) then (None, maxValue)
+        else 
+            let vx = 1.0 / rayDir;
+            let mutable t1 = (boxMin - rayOrigin) * vx
+            let mutable t2 = (boxMax - rayOrigin) * vx
+            if (t1 > t2) then
+                let t3 = t1
+                t1 <- t2
+                t2 <- t3
+            let dis = if (t1 > d) then t1 else d
+            maxValue <- if (t2 > maxValue) then maxValue else t2
+            if(dis > maxValue) then (None, maxValue)
+            else (Some(dis), maxValue)
+            
+            
     member x.Min = min
     member x.Max = max
 
+
+
     member x.Intersects(ray:Ray3D) = 
-        let mutable d = 0.0
+        let d = 0.
         let mutable maxValue = double.MaxValue
         
+        let distancex = intersect(ray.Direction.X, ray.Origin.X, this.Min.X, this.Max.X, d)
+        if(fst distancex = None) then None
+        else 
+            let dx = Option.get (fst distancex)
+            let distancey = intersect(ray.Direction.Y, ray.Origin.Y, this.Min.Y, this.Max.Y, dx)
+            if(fst distancey = None) then None
+            else
+                let dy = Option.get (fst distancey)
+                let distancez = intersect(ray.Direction.Z, ray.Origin.Z, this.Min.Z, this.Max.Z, dy)
+                if(fst distancez = None) then None
+                else fst distancez
+
+
+
+        (*                
         if (System.Math.Abs(ray.Direction.X) < 1E-06 && ((ray.Origin.X < this.Min.X) || (ray.Origin.X > this.Max.X))) then None
         else
             let vx = 1.0 / ray.Direction.X;
@@ -93,7 +130,8 @@ type BoundingBox3D(min:Vector3D, max:Vector3D) as this =
                     maxValue <- if(tz2>maxValue) then maxValue else tz2
                     if (d > maxValue) then None
                     else Some(d)
-
+            *)
+            
 type Plane3D(normal:Vector3D, d:double) as this = 
     do normal.Normalize()
     member x.D  = d

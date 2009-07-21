@@ -66,23 +66,6 @@
     <Reference Include="System.Windows" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Interactive\Camera.cs" />
-    <Compile Include="Interactive\Rotation.cs" />
-    <Compile Include="Interactive\Viewport.cs" />
-    <Compile Include="Math\Angle.cs" />
-    <Compile Include="Math\Axis.cs" />
-    <Compile Include="Math\BoundingBox.cs" />
-    <Compile Include="Math\Ext3D.cs" />
-    <Compile Include="Math\Plane.cs" />
-    <Compile Include="Math\Point3.cs" />
-    <Compile Include="Math\Group.cs" />
-    <Compile Include="Math\Matrix.cs" />
-    <Compile Include="Math\Point2.cs" />
-    <Compile Include="Math\Quaternion.cs" />
-    <Compile Include="Math\Ray.cs" />
-    <Compile Include="Math\Size.cs" />
-    <Compile Include="Math\Vector2.cs" />
-    <Compile Include="Math\Vector3.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RubiksCube\Animator.cs" />
     <Compile Include="RubiksCube\AnimContext.cs" />
