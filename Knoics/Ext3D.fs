@@ -51,20 +51,22 @@ type Quaternion3D(x:double, y:double, z:double, w:double) =
         
 
 type BoundingBox3D(min:Vector3D, max:Vector3D) as this = 
-
-    let intersect(rayDir:double, rayOrigin, boxMin, boxMax, d) =
-        let mutable maxValue = double.MaxValue
-        if (System.Math.Abs(rayDir) < 1E-06 && ((rayOrigin < boxMin) || (rayOrigin > boxMax))) then (None, maxValue)
+    let fmin a b =
+        if(a>b) then b
+        else a
+    let fmax a b =
+        if(a<b) then b
+        else a
+    let intersect(rayDir:double, rayOrigin, boxMin, boxMax, maxV, d) =
+        if (System.Math.Abs(rayDir) < 1E-06 && ((rayOrigin < boxMin) || (rayOrigin > boxMax))) then (None, double.MaxValue)
         else 
             let vx = 1.0 / rayDir;
-            let mutable t1 = (boxMin - rayOrigin) * vx
-            let mutable t2 = (boxMax - rayOrigin) * vx
-            if (t1 > t2) then
-                let t3 = t1
-                t1 <- t2
-                t2 <- t3
-            let dis = if (t1 > d) then t1 else d
-            maxValue <- if (t2 > maxValue) then maxValue else t2
+            let t1 = (boxMin - rayOrigin) * vx
+            let t2 = (boxMax - rayOrigin) * vx
+            let tmin = fmin t1 t2
+            let tmax = fmax t1 t2
+            let dis = fmax tmin d
+            let maxValue = fmin maxV tmax// if (t2 > maxValue) then maxValue else t2
             if(dis > maxValue) then (None, maxValue)
             else (Some(dis), maxValue)
             
@@ -75,62 +77,18 @@ type BoundingBox3D(min:Vector3D, max:Vector3D) as this =
 
 
     member x.Intersects(ray:Ray3D) = 
-        let d = 0.
-        let mutable maxValue = double.MaxValue
-        
-        let distancex = intersect(ray.Direction.X, ray.Origin.X, this.Min.X, this.Max.X, d)
+        let distancex = intersect(ray.Direction.X, ray.Origin.X, this.Min.X, this.Max.X, double.MaxValue, 0.)
         if(fst distancex = None) then None
         else 
             let dx = Option.get (fst distancex)
-            let distancey = intersect(ray.Direction.Y, ray.Origin.Y, this.Min.Y, this.Max.Y, dx)
+            let distancey = intersect(ray.Direction.Y, ray.Origin.Y, this.Min.Y, this.Max.Y, snd distancex, dx)
             if(fst distancey = None) then None
             else
                 let dy = Option.get (fst distancey)
-                let distancez = intersect(ray.Direction.Z, ray.Origin.Z, this.Min.Z, this.Max.Z, dy)
+                let distancez = intersect(ray.Direction.Z, ray.Origin.Z, this.Min.Z, this.Max.Z, snd distancey, dy)
                 if(fst distancez = None) then None
                 else fst distancez
 
-
-
-        (*                
-        if (System.Math.Abs(ray.Direction.X) < 1E-06 && ((ray.Origin.X < this.Min.X) || (ray.Origin.X > this.Max.X))) then None
-        else
-            let vx = 1.0 / ray.Direction.X;
-            let mutable t1 = (this.Min.X - ray.Origin.X) * vx
-            let mutable t2 = (this.Max.X - ray.Origin.X) * vx
-            if (t1 > t2) then
-                let t3 = t1
-                t1 <- t2
-                t2 <- t3
-            d <- if (t1 > d) then t1 else d
-            maxValue <- if (t2 > maxValue) then maxValue else t2
-            if (d > maxValue) then None 
-            else if (System.Math.Abs(ray.Direction.Y) < 1E-06 && ((ray.Origin.Y < this.Min.Y) || (ray.Origin.Y > this.Max.Y))) then None
-            else
-                let vy = 1.0 / ray.Direction.Y;
-                let mutable ty1 = (this.Min.Y - ray.Origin.Y) * vy
-                let mutable ty2 = (this.Max.Y - ray.Origin.Y) * vy
-                if (ty1 > ty2) then
-                    let ty = ty1
-                    ty1 <- ty2
-                    ty2 <- ty
-                d <- if (ty1 > d) then ty1 else d
-                maxValue <- if (ty2 > maxValue) then maxValue else ty2
-                if (d > maxValue) then None
-                else if (System.Math.Abs(ray.Direction.Z) < 1E-06 && ((ray.Origin.Z < this.Min.Z) || (ray.Origin.Z > this.Max.Z))) then None
-                else
-                    let vz = 1.0 / ray.Direction.Z
-                    let mutable tz1 = (this.Min.Z - ray.Origin.Z) * vz
-                    let mutable tz2 = (this.Max.Z - ray.Origin.Z) * vz
-                    if (tz1 > tz2) then
-                        let tz = tz1
-                        tz1 <- tz2
-                        tz2 <- tz
-                    d <- if (tz1>d) then tz1 else d
-                    maxValue <- if(tz2>maxValue) then maxValue else tz2
-                    if (d > maxValue) then None
-                    else Some(d)
-            *)
             
 type Plane3D(normal:Vector3D, d:double) as this = 
     do normal.Normalize()
@@ -150,11 +108,10 @@ type Plane3D(normal:Vector3D, d:double) as this =
         if (System.Math.Abs(num2) < 1E-12) then None
         else
             let num3 = ((this.Normal.X * ray.Origin.X) + (this.Normal.Y * ray.Origin.Y)) + (this.Normal.Z * ray.Origin.Z)
-            let mutable d:double = (-this.D - num3) / num2;
+            let d:double = (-this.D - num3) / num2;
             if (d < -1E-12) then None
             else if (d < 0.) then
-                d <- 0.
-                Some(d)
+                Some(0.)
             else 
                 Some(d)
 
@@ -191,84 +148,82 @@ type Ext3D() =
 
 
     static member Transform(position:Vector3D, matrix:Matrix3D) =
-        let mutable vector = new Vector3D()
         let x = (((position.X * matrix.M11) + (position.Y * matrix.M21)) + (position.Z * matrix.M31)) + matrix.OffsetX
         let y = (((position.X * matrix.M12) + (position.Y * matrix.M22)) + (position.Z * matrix.M32)) + matrix.OffsetY
         let z = (((position.X * matrix.M13) + (position.Y * matrix.M23)) + (position.Z * matrix.M33)) + matrix.OffsetZ
-        vector.X <- x;
-        vector.Y <- y;
-        vector.Z <- z;
-        vector;
+        new Vector3D(x, y, z)
 
     static member CreateRotationX(radians:double) = 
-        let mutable matrix = new Matrix3D()
         let cos = System.Math.Cos(radians)
         let sin = System.Math.Sin(radians)
-        matrix.M11 <- 1.
-        matrix.M12 <- 0.
-        matrix.M13 <- 0.
-        matrix.M14 <- 0.
-        matrix.M21 <- 0.
-        matrix.M22 <- cos
-        matrix.M23 <- sin
-        matrix.M24 <- 0.
-        matrix.M31 <- 0.
-        matrix.M32 <- -sin
-        matrix.M33 <- cos
-        matrix.M34 <- 0.
-        matrix.OffsetX <- 0.
-        matrix.OffsetY <- 0.
-        matrix.OffsetZ <- 0.
-        matrix.M44 <- 1.
-        matrix
+        new Matrix3D(
+            1., 
+            0.,
+            0.,
+            0.,
+            0.,
+            cos,
+            sin,
+            0.,
+            0.,
+            -sin,
+            cos,
+            0.,
+            0.,
+            0.,
+            0.,
+            1.
+        )
+        
 
     static member CreateRotationY(radians:double) =
-        let mutable matrix = new Matrix3D()
         let cos = System.Math.Cos(radians)
         let sin = System.Math.Sin(radians)
-        matrix.M11 <- cos
-        matrix.M12 <- 0.
-        matrix.M13 <- -sin
-        matrix.M14 <- 0.
-        matrix.M21 <- 0.
-        matrix.M22 <- 1.
-        matrix.M23 <- 0.
-        matrix.M24 <- 0.
-        matrix.M31 <- sin
-        matrix.M32 <- 0.
-        matrix.M33 <- cos
-        matrix.M34 <- 0.
-        matrix.OffsetX <- 0.
-        matrix.OffsetY <- 0.
-        matrix.OffsetZ <- 0.
-        matrix.M44 <- 1.
-        matrix
+        new Matrix3D(
+            cos,
+            0.,
+            -sin,
+            0.,
+            0.,
+            1.,
+            0.,
+            0.,
+            sin,
+            0.,
+            cos,
+            0.,
+            0.,
+            0.,
+            0.,
+            1.
+         )
+        
 
 
     static member CreateRotationZ(radians:double) =
-        let mutable matrix = new Matrix3D()
         let cos = System.Math.Cos(radians)
         let sin = System.Math.Sin(radians)
-        matrix.M11 <- cos
-        matrix.M12 <- sin
-        matrix.M13 <- 0.
-        matrix.M14 <- 0.
-        matrix.M21 <- -sin
-        matrix.M22 <- cos
-        matrix.M23 <- 0.
-        matrix.M24 <- 0.
-        matrix.M31 <- 0.
-        matrix.M32 <- 0.
-        matrix.M33 <- 1.
-        matrix.M34 <- 0.
-        matrix.OffsetX <- 0.
-        matrix.OffsetY <- 0.
-        matrix.OffsetZ <- 0.
-        matrix.M44 <- 1.
-        matrix
+        new Matrix3D(
+            cos,
+            sin,
+            0.,
+            0.,
+            -sin,
+            cos,
+            0.,
+            0.,
+            0.,
+            0.,
+            1., 
+            0.,
+            0.,
+            0.,
+            0.,
+            1.
+        )
+        
     
     static member CreateFromQuaternion(quaternion:Quaternion3D) =
-        let mutable matrix = new Matrix3D()
         let xx = quaternion.X * quaternion.X
         let yy = quaternion.Y * quaternion.Y
         let zz = quaternion.Z * quaternion.Z
@@ -278,43 +233,45 @@ type Ext3D() =
         let yw = quaternion.Y * quaternion.W
         let yz = quaternion.Y * quaternion.Z
         let xw = quaternion.X * quaternion.W
-        matrix.M11 <- 1. - (2. * (yy + zz))
-        matrix.M12 <- 2. * (xy + zw)
-        matrix.M13 <- 2. * (zx - yw)
-        matrix.M14 <- 0.
-        matrix.M21 <- 2. * (xy - zw)
-        matrix.M22 <- 1. - (2. * (zz + xx))
-        matrix.M23 <- 2. * (yz + xw)
-        matrix.M24 <- 0.
-        matrix.M31 <- 2. * (zx + yw)
-        matrix.M32 <- 2. * (yz - xw)
-        matrix.M33 <- 1. - (2. * (yy + xx))
-        matrix.M34 <- 0.
-        matrix.OffsetX <- 0.
-        matrix.OffsetY <- 0.
-        matrix.OffsetZ <- 0.
-        matrix.M44 <- 1.
-        matrix;
+        new Matrix3D(
+            1. - (2. * (yy + zz)),
+            2. * (xy + zw),
+            2. * (zx - yw),
+            0.,
+            2. * (xy - zw),
+            1. - (2. * (zz + xx)),
+            2. * (yz + xw),
+            0.,
+            2. * (zx + yw),
+            2. * (yz - xw),
+            1. - (2. * (yy + xx)),
+            0.,
+            0.,
+            0.,
+            0.,
+            1.
+        )
 
     static member CreateTranslation(position:Vector3D) =
-        let mutable matrix = new Matrix3D()
-        matrix.M11 <- 1.
-        matrix.M12 <- 0.
-        matrix.M13 <- 0.
-        matrix.M14 <- 0.
-        matrix.M21 <- 0.
-        matrix.M22 <- 1.
-        matrix.M23 <- 0.
-        matrix.M24 <- 0.
-        matrix.M31 <- 0.
-        matrix.M32 <- 0.
-        matrix.M33 <- 1.
-        matrix.M34 <- 0.
-        matrix.OffsetX <- position.X
-        matrix.OffsetY <- position.Y
-        matrix.OffsetZ <- position.Z
-        matrix.M44 <- 1.
-        matrix
+        new Matrix3D(
+            1.,
+            0.,
+            0.,
+            0.,
+            0.,
+            1.,
+            0.,
+            0.,
+            0.,    
+            0.,
+            1.,
+            0.,
+            position.X,
+            position.Y,
+            position.Z,
+            1.
+        )
+        
 
 
     static member Unproject(pt:Point , viewpoint:Point3D , worldToLocal:Matrix3D , viewToWorld:Matrix3D , screenToViewTransform:Matrix3D ) =
