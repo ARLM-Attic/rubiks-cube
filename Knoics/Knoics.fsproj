@@ -65,7 +65,8 @@
   <ItemGroup>
     <Compile Include="Ext3D.fs" />
     <None Include="Script.fsx" />
-    <Compile Include="Axis.fs" />
+    <Compile Include="Methods.fs" />
+    <Compile Include="PollingTimer.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\FSharp\1.0\Microsoft.FSharp.Targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v3.0\Microsoft.Silverlight.Common.targets" />

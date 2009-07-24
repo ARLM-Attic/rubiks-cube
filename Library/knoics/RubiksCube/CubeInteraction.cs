@@ -93,14 +93,14 @@ namespace Knoics.RubiksCube
                     if (_angle != null && (_selected.SelectedCubies!= null ||_selected.SelectMode == SelectMode.Cube))
                     {
                         double angle = _rubikscube.TestAngle(p, _prevHit, _axis);
-                        if (System.Math.Abs(angle) < 90)
+                        if (System.Math.Abs(angle) < Angle.DegreesToRadians(90))
                         {
                             if (_selected.SelectMode == SelectMode.Cubies)
-                                foreach (Cubie cubie in _selected.SelectedCubies) cubie.Rotate(_axis, Angle.DegreesToRadians(angle), true);
+                                foreach (Cubie cubie in _selected.SelectedCubies) cubie.Rotate(_axis, angle, true);
                             else
                             {
-                                _rubikscube.Rotate(_axis, Angle.DegreesToRadians(angle), true);
-                                Debug.WriteLine(string.Format("move angle: {0}", _angle));
+                                _rubikscube.Rotate(_axis, angle, true);
+                                //Debug.WriteLine(string.Format("move angle: {0}", _angle));
                             }
                             _angle = angle;
                         }
@@ -123,7 +123,7 @@ namespace Knoics.RubiksCube
                     if (_angle != null)
                     {
                         double angle = (double)_angle;
-                        if (System.Math.Abs(angle) > 10 && System.Math.Abs(angle) < 90)
+                        if (System.Math.Abs(angle) > Angle.DegreesToRadians(10) && System.Math.Abs(angle) < Angle.DegreesToRadians(90))
                         {
                             if (_selected.SelectMode == SelectMode.Cubies)
                             {
@@ -132,7 +132,7 @@ namespace Knoics.RubiksCube
                                 string op = CubeOperation.GetOp(_basicOp, dir);
                                 if (!string.IsNullOrEmpty(op))
                                 {
-                                    _rubikscube.Rotate(op, 20, false, Angle.DegreesToRadians(angle), true);
+                                    _rubikscube.Rotate(op, 20, false, angle, true);
                                     //Debug.WriteLine(string.Format("op:{0}, angle:{1}", op, angle));
                                 }
                             }

@@ -1,9 +1,31 @@
-﻿namespace Knoics.Math
+﻿//-----------------------------------------------------------------------------
+// File:        Ext3D.fs
+// Author:      Ligang Wang
+// Email:       ligang@dingn.com
+// Date:        07/21/2009
+//-----------------------------------------------------------------------------
+namespace Knoics.Math
 
 open System.Windows
 open Kit3D.Windows.Media.Media3D
+open System
 
+[<Flags>]
+type Axis = 
+    | X = 0x0001
+    | Y = 0x0002
+    | Z = 0x0004
+    
+    
+    
+type Angle = 
+    static member RadiansToDegrees(radians:double) =
+        radians * 57.295779513082323
 
+    static member DegreesToRadians(degrees:double) = 
+        degrees / 57.295779513082323
+        
+        
 [<Struct>]
 type Ray3D(o:Point3D, d:Vector3D)= 
     member x.Origin = o
@@ -134,17 +156,21 @@ type Ext3D() =
     static member UnitZ = _unitZ
 
 
+    ///to radian
     static member AngleBetween(vector1:Vector3D, vector2:Vector3D) =
         do vector1.Normalize()
         do vector2.Normalize()
         if (Vector3D.DotProduct(vector1, vector2) < 0.0) then
             let vectord2 = -vector1 - vector2
             let r = 3.1415926535897931 - (2.0 * System.Math.Asin(vectord2.Length / 2.0))
-            57.295779513082323 * r//RadiansToDegrees(r)
+            r
+            //57.295779513082323 * r//RadiansToDegrees(r)
         else
             let vectord = vector1 - vector2
             let r = 2.0 * System.Math.Asin(vectord.Length / 2.0)
-            57.295779513082323 * r//RadiansToDegrees(r)
+            r
+            //57.295779513082323 * r//RadiansToDegrees(r)
+
 
 
     static member Transform(position:Vector3D, matrix:Matrix3D) =

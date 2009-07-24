@@ -480,8 +480,21 @@ namespace Knoics.RubiksCube
                         angle = -angle;
                 }
 
-                if (angle != null && System.Math.Abs((double)angle) < 1) angle = null;
-                //Debug.WriteLine(string.Format("axis: {0}, angle:{1}", axis, angle));
+                double threshold = Angle.DegreesToRadians(1.0);
+
+                if (angle != null) 
+                {
+                    //Debug.WriteLine(string.Format("angle: {0}, threshold:{1}", angle, threshold));
+                    if (System.Math.Abs((double)angle) < threshold)
+                    {
+                        //Debug.WriteLine("non null to null");
+                        angle = null;
+                    }
+
+                }
+                //else
+                    //Debug.WriteLine("null angle");
+
             }
             return angle;
         }
