@@ -16,44 +16,31 @@ using System.Windows.Media;
 
 namespace Knoics.RubiksCube
 {
+
     public struct CubeSize
     {
-        public int Width { get; set;}   //x number of cubies
-        public int Height { get; set; } //y number of cubies
-        public int Depth { get; set; }  //z number of cubies
+        public int Width;  //x number of cubies
+        public int Height; //y number of cubies
+        public int Depth;  //z number of cubies
+        public CubeSize(int w, int h, int d)
+        {
+            Width = w; Height = h; Depth = d;
+        }
     }
 
 
     internal struct FaceConfig
     {
-        public string Name { get; set; }
-        public Color Color { get; set; }
-        public Axis Normal { get; set; }
-    }
+        public string Name;
+        public Color Color;
+        public Axis Normal;
 
-    /*
-    public struct Color
-    {
-        public byte A {get;set;}
-        public byte R { get; set; }
-        public byte G { get; set; }
-        public byte B { get; set; }
-
-        public Color(byte a, byte r, byte g, byte b):this()
+        public FaceConfig(Color color, string name, Axis normal)
         {
-            A = a; R = r; G = g; B = b;
+            Color = color;
+            Name = name;
+            Normal = normal;
         }
-
-        public readonly static Color Red = new Color(255, 0xD3, 0x20, 0x32);
-        public readonly static Color Green = new Color(255, 0, 0xA0, 0x4C);
-        public readonly static Color Blue = new Color(255, 0x0E, 0x33, 0xDE);
-        public readonly static Color White = new Color(255, 0xF0, 0xEE, 0xED);
-        public readonly static Color Yellow = new Color(255, 255, 255, 0);
-        public readonly static Color Orange = new Color(255, 0xFB, 0x79, 0x08);
-        public readonly static Color Black = new Color(255, 0, 0, 0);
-
     }
-    */
-
 
 }

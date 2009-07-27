@@ -13,7 +13,6 @@ using System.Diagnostics;
 
 namespace Knoics.RubiksCube
 {
-
     public delegate void PostOp(string op);
     public delegate bool PreOp(AnimContext context);
     public class Animator
@@ -31,11 +30,6 @@ namespace Knoics.RubiksCube
         }
 
 
-        private Func<Transform, string,  bool> _endUpdator;
-        public Func<Transform, string, bool> EndUpdator
-        {
-            set { _endUpdator = value; }
-        }
 
         private Queue<AnimContext> _animQueue;
         private bool _inAnimation;
@@ -128,4 +122,5 @@ namespace Knoics.RubiksCube
             }
         }
     }
+
 }

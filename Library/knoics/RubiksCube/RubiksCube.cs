@@ -16,11 +16,24 @@ using Knoics.Math;
 using System.Diagnostics;
 using System.Windows;
 using Kit3D.Windows.Media.Media3D;
-using Microsoft.FSharp.Core;
+
 
 
 namespace Knoics.RubiksCube
 {
+
+    public enum SelectMode
+    {
+        Cubies,
+        Cube
+    }
+
+    public class CubeSelection
+    {
+        public IEnumerable<Cubie> SelectedCubies { get; set; }
+        public SelectMode SelectMode { get; set; }
+    }
+
     public delegate void OneOpDone(string op, string seq, int steps, bool isSolved);
     public class HitResult
     {
@@ -60,14 +73,26 @@ namespace Knoics.RubiksCube
                 OneOpDone(op, _sequence, _steps, isSolved);
             }
         }
+
+        private IEnumerable<CubicleFace> GetFaces(string faceName)
+        {
+            foreach (Cubicle cubicle in Cubicles.Values)
+            {
+                if (cubicle.Name.IndexOf(faceName) >= 0)
+                {
+                    yield return cubicle.Faces[faceName];
+                }
+            }
+        }
+
         private bool BeforeOp(AnimContext animContext)
         {
             string op = animContext.Op;
             if (op == CubeOperation.UndoOp)
             { //undo
                 if (string.IsNullOrEmpty(_sequence)) return  false;
-                
-                op = CubeOperation.GetOp(ref _sequence, true, true);
+
+                op = CubeOperation.GetOp(ref _sequence, true, true); 
                 op = CubeOperation.GetReverseOp(op);
                 if (!string.IsNullOrEmpty(op))
                     animContext.Op = op;
@@ -82,66 +107,71 @@ namespace Knoics.RubiksCube
             if (op == CubeOperation.FoldOp || op == CubeOperation.UnFoldOp)
             {
                 bool unfold = (op == CubeOperation.UnFoldOp);
-                FaceTransform f = new FaceTransform()
+                FaceTransform f = new FaceTransform("F", Axis.X, false, new Vector3D(0, edgeY, edgeZ), new Vector3D(), face => GetFaces(face))
                 {
                     Silent = true,
                     ChangeAngle = unfold ? -CubeOperation.PiOver2 : CubeOperation.PiOver2,
                     Begin = 0,
+                    /*
                     Face = "F",
                     AxisTranslationFromOrigin = new Vector3D(0, edgeY, edgeZ),
                     Axis = Axis.X,
-                    IsAxisMoving = false,
-                    Cube = this
-
+                    IsAxisMoving = false
+                    */
                 };
-                FaceTransform b = new FaceTransform()
+                FaceTransform b = new FaceTransform("B", Axis.X, false, new Vector3D(0, edgeY, -edgeZ), new Vector3D(), face => GetFaces(face))
                 {
                     Silent = true,
                     ChangeAngle = unfold ? CubeOperation.PiOver2 : -CubeOperation.PiOver2,
-                    Begin = 0,
+                    Begin = 0
+                    /*
                     Face = "B",
                     AxisTranslationFromOrigin = new Vector3D(0, edgeY, -edgeZ),
                     Axis = Axis.X,
-                    IsAxisMoving = false,
-                    Cube = this
+                    IsAxisMoving = false
+                     */
                 };
-                FaceTransform l = new FaceTransform()
+                FaceTransform l = new FaceTransform("L", Axis.Z, false,new Vector3D(-edgeX, edgeY, 0),new Vector3D(), face => GetFaces(face))
                 {
                     Silent = true,
                     ChangeAngle = unfold ? -CubeOperation.PiOver2 : CubeOperation.PiOver2,
                     Begin = 0,
+                    /*
                     Face = "L",
                     AxisTranslationFromOrigin = new Vector3D(-edgeX, edgeY, 0),
                     Axis = Axis.Z,
-                    IsAxisMoving = false,
-                    Cube = this
+                    IsAxisMoving = false
+                     */
                 };
-                FaceTransform r = new FaceTransform()
+                FaceTransform r = new FaceTransform("R", Axis.Z, false, new Vector3D(edgeX, edgeY, 0), new Vector3D(), face => GetFaces(face))
                 {
                     Silent = true,
                     ChangeAngle = unfold ? CubeOperation.PiOver2 : -CubeOperation.PiOver2,
-                    Begin = 0,
+                    Begin = 0
+                    /*
                     Face = "R",
                     AxisTranslationFromOrigin = new Vector3D(edgeX, edgeY, 0),
                     Axis = Axis.Z,
-                    IsAxisMoving = false,
-                    Cube = this
+                    IsAxisMoving = false
+                    */
                 };
+
 
                 FaceTransform d;
                 //if (unfold)
                 {
-                    d = new FaceTransform()
+                    d = new FaceTransform("D", Axis.Z, true,new Vector3D(edgeX, -edgeY, 0),new Vector3D(edgeX, edgeY, 0), face => GetFaces(face))
                     {
                         Silent = true,
                         ChangeAngle = unfold ? CubeOperation.PiOver2 : -CubeOperation.PiOver2,
-                        Begin = 0,
+                        Begin = 0
+                        /*
                         Face = "D",
                         AxisTranslationFromOrigin = new Vector3D(edgeX, -edgeY, 0),
                         Axis2TranslationFromOrigin = new Vector3D(edgeX, edgeY, 0),
                         Axis = Axis.Z,
-                        IsAxisMoving = true,
-                        Cube = this
+                        IsAxisMoving = true
+                        */
                     };
                 }
                 animContext.TransformParams.Add(f);
@@ -158,13 +188,8 @@ namespace Knoics.RubiksCube
                 BasicOp basicOp;
                 bool isReverse;
                 CubeOperation.GetBasicOp(op, out basicOp, out isReverse);
-
-                CubieTransform transform = new CubieTransform()
+                CubieTransform transform = new CubieTransform(op, isReverse, basicOp, cn=>Cubicles[cn])
                 {
-                    Op = op,
-                    IsReversedBasicOp = isReverse,
-                    BasicOp = basicOp,
-                    Cube = this,
                     Silent = animContext.Silent
                 };
                 transform.ChangeAngle = transform.RotateAngle - animContext.RotatedAngle;
@@ -184,6 +209,7 @@ namespace Knoics.RubiksCube
             #region Animation Part
             {
                 _animator = new Animator(BeforeOp, AfterOp );
+                /*
                 _animator.EndUpdator = (obj, op) =>
                 {
                     bool isSolved = IsSolved();
@@ -191,6 +217,7 @@ namespace Knoics.RubiksCube
                         OneOpDone(op, _sequence, _steps, isSolved);
                     return true;
                 };
+                 */
             }
             #endregion
         }
@@ -201,8 +228,8 @@ namespace Knoics.RubiksCube
             RubiksCube rubiksCube = new RubiksCube();
             rubiksCube.CubieSize = cubieSize;
             rubiksCube._model = CubeConfiguration.Factory.CreateModel();
-            rubiksCube._interaction = new CubeInteraction(rubiksCube);
-            CubeSize size = new CubeSize() { Width = cubieNum, Height = cubieNum, Depth = cubieNum };
+            
+            CubeSize size = new CubeSize(cubieNum, cubieNum, cubieNum );
             rubiksCube.CubeSize = size;
             Vector3D start = origin;
             start.X -= (size.Width - 1) * cubieSize / 2;
@@ -274,7 +301,6 @@ namespace Knoics.RubiksCube
         {
             string text = commandString.Trim().ToUpper();
             if (string.IsNullOrEmpty(text)) return text;
-
             string action = CubeOperation.GetOp(ref text, false, false);
             Op(action, 30);
             return text;
@@ -402,11 +428,10 @@ namespace Knoics.RubiksCube
             hitResult = null;
             Ray3D ray = Ext3D.Unproject(pt, _viewpoint, _model.Transform, _inverseViewMatrix, _inverseProjectionMatrix);
             //Debug.WriteLine(string.Format("ray: {0}", ray));
-            //double? d = this.BoundingBox.Intersects(ray);
-            Option<double> d = this.BoundingBox.Intersects(ray);
+            double? d = this.BoundingBox.Intersects(ray);
             if (!deep)
             {
-                if (Option<double>.get_IsSome(d))
+                if (d!=null)
                 {
                     //Debug.WriteLine(string.Format("first ray: {0}, distance:{1}", ray, (double)d));
                     hitResult = new HitResult() { Distance = d.Value, HitCubicle = null, HitPoint = ray.Origin + d.Value * ray.Direction };
@@ -415,7 +440,7 @@ namespace Knoics.RubiksCube
             else
             {
                 List<HitResult> results = new List<HitResult>();
-                if (Option<double>.get_IsSome(d))
+                if (d!=null)
                 {
                     //double? d1;
                     foreach (Cubicle cubicle in _cubicles.Values)
@@ -423,8 +448,8 @@ namespace Knoics.RubiksCube
                         Matrix3D localToWorld = _model.Transform; localToWorld.Invert();// *cubicle.Cubie.Transform;
                         ray = Ext3D.Unproject(pt, _viewpoint, localToWorld, _inverseViewMatrix, _inverseProjectionMatrix);
                         //d1 = cubicle.Cubie.BoundingBox.Intersects(ray);
-                        Option<double> d1 = cubicle.BoundingBox.Intersects(ray);
-                        if (Option<double>.get_IsSome(d1))
+                        double? d1 = cubicle.BoundingBox.Intersects(ray);
+                        if (d1!=null)
                         {
                             HitResult result = new HitResult() { Distance = d1.Value, HitCubicle = cubicle, HitPoint = ray.Origin + d1.Value * ray.Direction };
                             results.Add(result);
@@ -517,7 +542,8 @@ namespace Knoics.RubiksCube
                 case Axis.X:
                     Vector3D v = new Vector3D(-1, 0, 0);
                     Plane3D yz = new Plane3D(v, prevHit.HitPoint.X); Point3D oyz = new Point3D(prevHit.HitPoint.X, 0, 0);
-                    Point3D pyz = yz.Intersect(ray).Item2; Vector3D from = prevHit.HitPoint - oyz; Vector3D to = pyz - oyz;
+                    Point3D pyz;
+                    yz.Intersect(ray, out pyz); Vector3D from = prevHit.HitPoint - oyz; Vector3D to = pyz - oyz;
                     angle =  Ext3D.AngleBetween(from, to);
                     if (Vector3D.DotProduct(Ext3D.UnitX, Vector3D.CrossProduct(from, to)) < 0)
                         angle = -angle;
@@ -526,7 +552,8 @@ namespace Knoics.RubiksCube
                 case Axis.Z:
                     v = new Vector3D(0, 0, -1);
                     Plane3D xy = new Plane3D(v, prevHit.HitPoint.Z); Point3D oxy = new Point3D(0, 0, prevHit.HitPoint.Z);
-                    Point3D pxy = xy.Intersect(ray).Item2; from = prevHit.HitPoint - oxy; to = pxy - oxy;
+                    Point3D pxy;
+                    xy.Intersect(ray, out pxy); from = prevHit.HitPoint - oxy; to = pxy - oxy;
                     angle = Ext3D.AngleBetween(from, to);
                     if (Vector3D.DotProduct(Ext3D.UnitZ, Vector3D.CrossProduct(from, to)) < 0)
                         angle = -angle;
@@ -535,7 +562,8 @@ namespace Knoics.RubiksCube
                 case Axis.Y:
                     v = new Vector3D(0, -1, 0);
                     Plane3D zx = new Plane3D(v, prevHit.HitPoint.Y); Point3D ozx = new Point3D(0, prevHit.HitPoint.Y, 0);
-                    Point3D pzx = zx.Intersect(ray).Item2; from = prevHit.HitPoint - ozx; to = pzx - ozx;
+                    Point3D pzx;
+                    zx.Intersect(ray, out pzx); from = prevHit.HitPoint - ozx; to = pzx - ozx;
                     angle = Ext3D.AngleBetween(from, to);
                     if (Vector3D.DotProduct(Ext3D.UnitY, Vector3D.CrossProduct(from, to)) < 0)
                         angle = -angle;
@@ -577,8 +605,6 @@ namespace Knoics.RubiksCube
 
         #region CubeAnimation
         private Animator _animator;
-        private CubeInteraction _interaction;
-        public CubeInteraction Interaction { get { return _interaction; } }
         public IEnumerable<Cubie> SelectedCubies { get; set; }
         public string SelectedBasicOp { get; set; }
         public OneOpDone OneOpDone;
@@ -613,18 +639,8 @@ namespace Knoics.RubiksCube
         public void Unfold(double frames)
         {
             bool unfold = !_unfolded;
-
-            AnimContext animContext = new AnimContext()
-            {
-                Op = unfold? CubeOperation.UnFoldOp : CubeOperation.FoldOp,
-                //Duration = 1000,
-                Frames = frames,
-                Silent = true,
-
-                TransformParams = new List<Transform>()
-            };
-
-            _animator.Start(animContext);
+            _animator.Start(new AnimContext(0.0, frames, unfold ? CubeOperation.UnFoldOp : CubeOperation.FoldOp, true, new List<Transform>()));
+            //_animator.Start(new AnimContext(0.0, frames, unfold ? CubeOperation.UnFoldOp : CubeOperation.FoldOp, true, new List<Transform>()));
 
             _unfolded = unfold;
         }
@@ -639,24 +655,138 @@ namespace Knoics.RubiksCube
         internal void Rotate(string op, double frames, bool silent, double rotatedAngle, bool fromInteraction) 
         {
             if (string.IsNullOrEmpty(op)) return;
-            if (!fromInteraction && _interaction.InTrack) return;
+            if (!fromInteraction && InTrack) return;
+            _animator.Start(new AnimContext(rotatedAngle, frames, op.ToUpper(), silent, new List<Transform>()));
+            //_animator.Start(new AnimContext(rotatedAngle, frames, op.ToUpper(), silent, new List<Transform>()));
+        }
+        #endregion
 
-            op = op.ToUpper();
 
-            AnimContext animContext = new AnimContext()
+        #region Interaction
+        private HitResult _prevHit;
+        private double? _angle = 0;
+        private string _basicOp;
+        private Axis _axis = Axis.X;
+        private CubeSelection _selected;
+
+        public bool InTrack { get { return _prevHit != null; } }
+        public void StartTrack(Point pt)
+        {
+            try
             {
-                Op = op,
-                Frames = frames,
-                Silent = silent,
-                RotatedAngle = rotatedAngle,
-                TransformParams = new List<Transform>()
-            };
+                if (_prevHit != null)
+                {
+                    EndTrack();
+                }
 
-            _animator.Start(animContext);
+                if (NoOp && _prevHit == null)
+                {
+                    HitResult result;
+                    bool hit = HitTest(pt, true, out result);
+                    if (hit && result != null)
+                    {
+                        _prevHit = result;
+                        //Debug.WriteLine(string.Format("start:{0},pt:{1}", result.HitCubicle, result.HitPoint));
+                        _angle = null;
+                    }
+
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("StartTrack Error: " + e.ToString());
+            }
+
         }
 
+        public void Track(Point p)
+        {
+            try
+            {
+                if (_prevHit != null && NoOp)
+                {
+                    if (_angle == null)
+                    {
 
+                        _angle = TestAngle(p, _prevHit, out _axis);
+                        _selected = Select(_prevHit.HitCubicle, _axis, out _basicOp);
+                        if (_selected.SelectMode == SelectMode.Cubies)
+                            foreach (Cubie cubie in _selected.SelectedCubies) cubie.Save();
+                        else
+                            Save();
+                        //Debug.WriteLine(string.Format("selected angle: {0}, axis:{1}", _angle, _axis));
+                    }
 
+                    if (_angle != null && (_selected.SelectedCubies != null || _selected.SelectMode == SelectMode.Cube))
+                    {
+                        double angle = TestAngle(p, _prevHit, _axis);
+                        if (System.Math.Abs(angle) < Angle.DegreesToRadians(90))
+                        {
+                            if (_selected.SelectMode == SelectMode.Cubies)
+                                foreach (Cubie cubie in _selected.SelectedCubies)
+                                    cubie.Rotate(_axis, angle, true);
+                            else
+                            {
+                                Rotate(_axis, angle, true);
+                                //Debug.WriteLine(string.Format("move angle: {0}", _angle));
+                            }
+                            _angle = angle;
+                        }
+
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Track Error: " + e.ToString());
+            }
+        }
+
+        public void EndTrack()
+        {
+            try
+            {
+                if (NoOp && _prevHit != null)
+                {
+                    if (_angle != null)
+                    {
+                        double angle = (double)_angle;
+                        if (System.Math.Abs(angle) > Angle.DegreesToRadians(10) && System.Math.Abs(angle) < Angle.DegreesToRadians(90))
+                        {
+                            if (_selected.SelectMode == SelectMode.Cubies)
+                            {
+                                //finish OP
+                                RotationDirection dir = (angle > 0) ? RotationDirection.CounterClockWise : RotationDirection.Clockwise;
+                                string op = CubeOperation.GetOp(_basicOp, dir);
+                                if (!string.IsNullOrEmpty(op))
+                                {
+                                    Rotate(op, 20, false, angle, true);
+                                    //Debug.WriteLine(string.Format("op:{0}, angle:{1}", op, angle));
+                                }
+                            }
+                            else
+                            {
+                            }
+                        }
+                        else
+                        {
+                            //Debug.WriteLine(string.Format("endtrack: {0}", angle));
+                            //cancel OP
+                            if (_selected.SelectMode == SelectMode.Cubies)
+                                foreach (Cubie cubie in _selected.SelectedCubies) cubie.Restore();
+                            else
+                                Restore();
+                        }
+                    }
+                    _prevHit = null;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("EndTrack Error: " + e.ToString());
+            }
+        }
         #endregion
     }
+
 }

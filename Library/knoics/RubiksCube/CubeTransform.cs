@@ -16,6 +16,7 @@ using Kit3D.Windows.Media.Media3D;
 
 namespace Knoics.RubiksCube
 {
+
     public abstract class Transform
     {
         public bool Silent { get; set; }
@@ -24,7 +25,7 @@ namespace Knoics.RubiksCube
         //needs to be refactored, Animation use only
         public double Begin { get; set; }
         public double Delta { get; set; }
-        public RubiksCube Cube { get; set; }
+        
 
         public abstract void BeforeTransform();
         public abstract void DoTransform(double deltaAngle);
@@ -37,14 +38,23 @@ namespace Knoics.RubiksCube
         public BasicOp BasicOp { get; set; }
         public bool IsReversedBasicOp { get; set; }
         public IEnumerable<Cubicle> AffectedCubicles { get; set; }
-        
+
+
+        private Func<string, Cubicle> _getCubicle;
+        public CubieTransform(string op, bool isReversedBasicOp, BasicOp basicOp, Func<string, Cubicle> getCubicle)
+        {
+            Op = op;
+            IsReversedBasicOp = isReversedBasicOp;
+            BasicOp = basicOp;
+            _getCubicle = getCubicle;
+        }
 
         public double RotateAngle { get { return IsReversedBasicOp ? -BasicOp.RotationAngle : BasicOp.RotationAngle; } } //standard angle
 
 
         public override void BeforeTransform()
         {
-            AffectedCubicles = BasicOp.CubicleGroup.Select(c => Cube. Cubicles[c]);
+            AffectedCubicles = BasicOp.CubicleGroup.Select(c => _getCubicle(c));
         }
 
         public override void DoTransform(double deltaAngle)
@@ -91,14 +101,14 @@ namespace Knoics.RubiksCube
                 if (cycle.Count() < 2) return;
                 int count = cycle.Count();
                 CubicleOrientation fromOrientation = cycle[count - 1];
-                Cubicle fromCubicle = Cube.Cubicles[fromOrientation.Name];
+                Cubicle fromCubicle = _getCubicle(fromOrientation.Name);
                 Cubie fromCubie = fromCubicle.Cubie;
                 Dictionary<string, CubieFace> fromFaces = fromCubicle.CubieFaces;
                 if (fromCubie == null) Debug.Assert(false);
                 for (int i = 0; i < count; i++)
                 {
                     CubicleOrientation toOrientation = cycle[i];
-                    Cubicle toCubicle = Cube.Cubicles[toOrientation.Name];
+                    Cubicle toCubicle = _getCubicle(toOrientation.Name);
                     fromCubie = toCubicle.SetCubie(fromCubie);
                     fromFaces = toCubicle.SetCubieFaces(fromFaces, fromOrientation.OrientationName, toOrientation.OrientationName);
                     fromOrientation = toOrientation;
@@ -120,20 +130,28 @@ namespace Knoics.RubiksCube
         public Vector3D Axis2TranslationFromOrigin { get; set; }
         public Axis Axis { get; set; }
         public bool IsAxisMoving { get; set; }
-        public override void BeforeTransform()
+
+        public FaceTransform(string face, 
+                    Axis axis, bool isAxisMoving,
+                    Vector3D axisTranslationFromOrigin,
+                    Vector3D axis2TranslationFromOrigin,
+                    Func<string, IEnumerable<CubicleFace>> getCubicleFaces)
         {
-            AffectedFaces = GetFaces(Face);
+            _getCubicleFaces = getCubicleFaces;
+            Face = face;
+            Axis = axis;
+            IsAxisMoving = isAxisMoving;
+            AxisTranslationFromOrigin = axisTranslationFromOrigin;
+            Axis2TranslationFromOrigin = axis2TranslationFromOrigin;
         }
 
-        private IEnumerable<CubicleFace> GetFaces(string faceName)
+        private Func<string, IEnumerable<CubicleFace>> _getCubicleFaces;
+
+        public override void BeforeTransform()
         {
-            foreach (Cubicle cubicle in  Cube.Cubicles.Values) {
-                if (cubicle.Name.IndexOf(faceName) >= 0)
-                {
-                    yield return cubicle.Faces[faceName];
-                }
-            }
+            AffectedFaces = _getCubicleFaces(Face);// GetFaces(Face);
         }
+
 
         
         Dictionary<CubieFace, Vector3D> _axisTranslation = new Dictionary<CubieFace, Vector3D>();
@@ -176,7 +194,7 @@ namespace Knoics.RubiksCube
                     Vector3D v1;
                     if (!_axisTranslation.ContainsKey(cubieFace))
                     {
-                        Matrix3D m = cubieFace.Transform; m.Invert();
+                        Matrix3D m = (cubieFace as ITransform).Transform; m.Invert();
                         v1 = Ext3D.Transform(Axis2TranslationFromOrigin, m);
                         _axisTranslation.Add(cubieFace, v1);
                     }
@@ -190,7 +208,7 @@ namespace Knoics.RubiksCube
                     _axisTranslation[cubieFace] = v1;
                     
                 }
-                cubieFace.DoTransform(rotation, false);
+                (cubieFace as ITransform).DoTransform(rotation, false);
             }
         }
 

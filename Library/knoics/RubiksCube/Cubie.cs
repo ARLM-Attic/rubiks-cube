@@ -13,11 +13,11 @@ using System.Text;
 using System.Diagnostics;
 using Knoics.Math;
 using Kit3D.Windows.Media.Media3D;
-//using Knoics.Interactive;
 using Knoics.Math;
 
 namespace Knoics.RubiksCube
 {
+
     public class Cubie : RotatableObject
     {
         private string _name;
@@ -118,22 +118,6 @@ namespace Knoics.RubiksCube
             return string.Format("{0}-{1}", _cubicle, _name);
         }
 
-        /*
-        public Matrix Transform { get { return _transform; } }
-        private Matrix _transform = Matrix.Identity;
-        private Matrix _savedTransform = Matrix.Identity;
-
-        private Matrix _axisTransform = Matrix.Identity;
-        private Vector3 _unitX = Vector3.UnitX;
-        private Vector3 _unitY = Vector3.UnitY;
-        private Vector3 _unitZ = Vector3.UnitZ;
-
-
-        public Vector3 UnitX { get { return _unitX; } }
-        public Vector3 UnitY { get { return _unitY; } }
-        public Vector3 UnitZ { get { return _unitZ; } }
-        */
-
         public override void Reset()
         {
             base.Reset();
@@ -144,7 +128,7 @@ namespace Knoics.RubiksCube
         {
             base.Restore();
             foreach (CubieFace face in Faces.Values) face.Restore();
-            _center = Ext3D.Transform(_center, _transform);
+            _center = Ext3D.Transform(_center, base.Transform);
 
             
         }
@@ -159,7 +143,7 @@ namespace Knoics.RubiksCube
         {
             Matrix3D matrix = base.Rotate(axis, deltaAngle, isFromSaved);
 
-            _center = Ext3D.Transform(_center,  _transform);
+            _center = Ext3D.Transform(_center,  base.Transform);
             foreach (CubieFace face in Faces.Values)
             {
                 face.DoTransform(matrix, isFromSaved);
@@ -169,4 +153,5 @@ namespace Knoics.RubiksCube
  
         
     }
+
 }

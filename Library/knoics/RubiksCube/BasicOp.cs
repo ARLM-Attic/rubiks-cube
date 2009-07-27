@@ -14,12 +14,32 @@ using Knoics.Math;
 
 namespace Knoics.RubiksCube
 {
+
     public class CubicleOrientation
     {
         public string Name { get; set; }
         public string OrientationName { get; set; }
+
+        public CubicleOrientation(string name, string orientationName)
+        {
+            Name = name;
+            OrientationName = orientationName;
+        }
     }
 
+    public class OpFromBasic
+    {
+        public OpFromBasic(string op, string basicOp, RotationDirection dir)
+        {
+            Op = op;
+            BasicOp = basicOp;
+            RotationDirectionWithAxis = dir;
+        }
+        public string Op { get; set; }
+        public string BasicOp { get; set; }
+        public RotationDirection RotationDirectionWithAxis { get; set; }
+    }
+    
 
     public class BasicOp
     {
@@ -27,35 +47,19 @@ namespace Knoics.RubiksCube
         public Axis Axis { get; set; }
         public double RotationAngle { get; set; }
 
-        //types of cycle, cycle elements
-        public CubicleOrientation[][] CubicleGroupCycles
+        public BasicOp(string op, string[][] cycles, Axis axis, double angle)
         {
-            get
-            {
-                return _cubicleGroupCycles;
-            }
-            /*
-            set
-            {
-                _cubicleGroupCycles = value;
-                _cubicleGroup = new List<string>();
-                foreach (string[] cubicles in value)
-                {
-                    foreach (string cubicle in cubicles)
-                    {
-                        _cubicleGroup.Add(cubicle);
-                    }
-                }
-
-            }
-             */
+            Op = op;
+            CubicleOrientationCycles = cycles;
+            Axis = axis;
+            RotationAngle = angle;
         }
 
         public string[][] CubicleOrientationCycles
         {
             set
             {
-                _cubicleGroupCycles = new CubicleOrientation[value.Count()][];
+                _cubicleGroupCycles = new CubicleOrientation[value.Length][];
                 _cubicleGroup = new List<string>();
                 int i = 0;
                 foreach (string[] orientationNames in value)
@@ -64,12 +68,7 @@ namespace Knoics.RubiksCube
                     int j = 0;
                     foreach (string orientationName in orientationNames)
                     {
-                        //_cubicleGroup.Add(cubicle);
-                        CubicleOrientation co = new CubicleOrientation()
-                        {
-                            Name = GetNameFromOrientedName(orientationName),
-                            OrientationName = orientationName
-                        };
+                        CubicleOrientation co = new CubicleOrientation(GetNameFromOrientedName(orientationName), orientationName);
                         _cubicleGroupCycles[i][j++] = co;
                         _cubicleGroup.Add(co.Name);
                     }
@@ -98,7 +97,17 @@ namespace Knoics.RubiksCube
             return name;
         }
 
+        //types of cycle, cycle elements
         private CubicleOrientation[][] _cubicleGroupCycles;
+        public CubicleOrientation[][] CubicleGroupCycles
+        {
+            get
+            {
+                return _cubicleGroupCycles;
+            }
+        }
+
+
         private List<string> _cubicleGroup;
         public List<string> CubicleGroup
         {
@@ -106,10 +115,4 @@ namespace Knoics.RubiksCube
         }
     }
 
-    public class OpFromBasic
-    {
-        public string Op { get; set; }
-        public string BasicOp { get; set; }
-        public RotationDirection RotationDirectionWithAxis{get;set;}
-    }
 }

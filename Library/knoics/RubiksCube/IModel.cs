@@ -12,7 +12,9 @@ using Knoics.Math;
 
 namespace Knoics.RubiksCube
 {
+    
     public interface IModel : ITransform
     {
     }
+    
 }

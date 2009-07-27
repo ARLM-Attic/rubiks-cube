@@ -12,9 +12,11 @@ using System.Net;
 
 namespace Knoics.RubiksCube
 {
+    
     public enum RotationDirection
     {
         CounterClockWise,
         Clockwise
     }
+    
 }

@@ -151,10 +151,6 @@
       <Project>{AC1E5901-643E-4DE1-B6B9-00EC929E55C2}</Project>
       <Name>Knoics</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Library\knoics\Knoics.SL.csproj">
-      <Project>{561C3D13-F8AB-4FBF-81C1-BD6522397539}</Project>
-      <Name>Knoics.SL</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\v3.0\Microsoft.Silverlight.CSharp.targets" Condition="" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

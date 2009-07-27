@@ -15,6 +15,7 @@ using System.Windows.Media;
 
 namespace Knoics.RubiksCube
 {
+
     public class CubeConfiguration
     {
         public static IFactory Factory { get; set; }
@@ -22,12 +23,12 @@ namespace Knoics.RubiksCube
 
         static CubeConfiguration()
         {
-            Faces.Add("U", new FaceConfig() { Color = Colors.Red, Name = "U", Normal = Axis.Y });
-            Faces.Add("D", new FaceConfig() { Color = Colors.Orange, Name = "D", Normal = Axis.Y });
-            Faces.Add("L", new FaceConfig() { Color = Colors.Green, Name = "L", Normal = Axis.X });
-            Faces.Add("R", new FaceConfig() { Color = Colors.Blue, Name = "R", Normal = Axis.X });
-            Faces.Add("B", new FaceConfig() { Color = Colors.White, Name = "B", Normal = Axis.Z });
-            Faces.Add("F", new FaceConfig() { Color = Colors.Yellow, Name = "F", Normal = Axis.Z });
+            Faces.Add("U", new FaceConfig(Colors.Red, "U", Axis.Y ));
+            Faces.Add("D", new FaceConfig(Colors.Orange, "D", Axis.Y ));
+            Faces.Add("L", new FaceConfig(Colors.Green, "L", Axis.X ));
+            Faces.Add("R", new FaceConfig(Colors.Blue, "R", Axis.X ));
+            Faces.Add("B", new FaceConfig(Colors.White, "B", Axis.Z ));
+            Faces.Add("F", new FaceConfig(Colors.Yellow, "F", Axis.Z ));
         }
 
         //x--0:Left     Width-1 :Right
@@ -109,4 +110,5 @@ namespace Knoics.RubiksCube
         }
 
     }
+
 }

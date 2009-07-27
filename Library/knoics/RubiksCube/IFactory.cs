@@ -14,9 +14,11 @@ using Kit3D.Windows.Media.Media3D;
 
 namespace Knoics.RubiksCube
 {
+
     public interface IFactory
     {
         IModel CreateModel();
-        IMesh CreateMesh(CubieFace face, Vector3D[] vertexes, Color color);
+        IMesh CreateMesh(string faceName, Vector3D[] vertexes, Color color);
     }
+
 }

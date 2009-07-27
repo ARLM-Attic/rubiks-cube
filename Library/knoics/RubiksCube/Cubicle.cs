@@ -15,6 +15,7 @@ using Knoics.Math;
 using Kit3D.Windows.Media.Media3D;
 namespace Knoics.RubiksCube
 {
+
     public class Cubicle
     {
         public string Name { get; private set; }
@@ -111,4 +112,5 @@ namespace Knoics.RubiksCube
         }
 
     }
+
 }

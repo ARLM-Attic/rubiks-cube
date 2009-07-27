@@ -4,6 +4,7 @@ using Knoics.Math;
 using Kit3D.Windows.Media.Media3D;
 namespace Knoics.RubiksCube
 {
+
     public interface ITransform
     {
         void Reset();
@@ -12,4 +13,5 @@ namespace Knoics.RubiksCube
         void DoTransform(Matrix3D matrix, bool isFromSaved);
         Matrix3D Transform { get; }
     }
+
 }

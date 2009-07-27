@@ -25,9 +25,9 @@ namespace RubiksCubeSL
     class Factory : IFactory
     {
         #region IMeshFactory Members
-        public IMesh CreateMesh(CubieFace face, Vector3D[] vertexes, Color color)
+        public IMesh CreateMesh(string faceName, Vector3D[] vertexes, Color color)
         {
-            return new CubieMesh(face, vertexes, color);
+            return new CubieMesh(faceName, vertexes, color);
         }
 
         public IModel CreateModel()
@@ -119,9 +119,9 @@ namespace RubiksCubeSL
         
 
         static readonly string[] PositiveFaces = new string[] { "U", "F", "R" };
-        public CubieMesh(CubieFace face, Vector3D[] vertexes, Color color)
+        public CubieMesh(string faceName, Vector3D[] vertexes, Color color)
         {
-            _face = face;
+            
             //_visual = new ModelVisual3D();
             _mesh = new MeshGeometry3D();
             _geometry = new GeometryModel3D();
@@ -136,7 +136,7 @@ namespace RubiksCubeSL
 
             Int32Collection indices;
             
-            if (!string.IsNullOrEmpty(PositiveFaces.FirstOrDefault(f => f == face.Name))) //X,Y,Z direction
+            if (!string.IsNullOrEmpty(PositiveFaces.FirstOrDefault(f => f == faceName))) //X,Y,Z direction
             {
                 indices = new Int32Collection
                 {
@@ -287,8 +287,6 @@ namespace RubiksCubeSL
             _geometry.Transform = new MatrixTransform3D(Matrix3D.Identity);
         }
 
-        private CubieFace _face;
-        public CubieFace Face { get { return _face; } }
         private Matrix3D _savedTransform;
         public void Save()
         {

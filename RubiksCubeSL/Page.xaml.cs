@@ -117,8 +117,8 @@ namespace RubiksCubeSL
             viewport.VerticalAlignment = VerticalAlignment.Stretch;
             
             
-            CubeConfiguration.Factory = new Factory();
-            _rubikscube = RubiksCube.CreateRubiksCube(new Vector3D(), 3, 10);
+            CubeConfiguration.Factory =new Option<IFactory>(new Factory());
+            _rubikscube = RubiksCube.CreateRubiksCube(new Vector3D(), 3, 10, RubiksCube_OneOpDone);
             ModelVisual3D model = ((CubeModel)_rubikscube.Model).ModelVisual;
             viewport.Children.Add(model);
 
@@ -127,13 +127,8 @@ namespace RubiksCubeSL
             {
                 group.Children.Add(((CubieMesh)mesh).Geometry);
             }
-            _rubikscube.OneOpDone = RubiksCube_OneOpDone;
             _rubikscube.Random();
-
-
             _model = model;
-
-
             Kit3D.Windows.Media.CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
         }
 
@@ -142,7 +137,7 @@ namespace RubiksCubeSL
         {
             if (_timer.OnInterval())
                 CheckCommand();
-
+            
             _rubikscube.Animator.Start(null);
 
             _rubikscube.Animator.Update();
@@ -154,7 +149,7 @@ namespace RubiksCubeSL
                 _cameraZ += _cameraMove;
                 Vector3D p = new Vector3D(0, 0, _cameraZ);//120); //60;
                 p = Ext3D.Transform(p, _cameraRotate); _camera.Position = new Point3D(p.X, p.Y, p.Z);
-                Debug.WriteLine(_camera.Position);
+                //Debug.WriteLine(_camera.Position);
                 if (_cameraZ <= _cameraNear || _cameraZ >= _cameraFar)
                 {
                     _cameraMove = 0;
@@ -194,14 +189,14 @@ namespace RubiksCubeSL
                     _viewport.ActualHeight
                     );
             }
-            _rubikscube.Interaction.StartTrack(e.GetPosition(_viewport));
+            _rubikscube.StartTrack(e.GetPosition(_viewport));
         }
 
 
         private void UserControl_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             _isLeftButtonPressed = false;
-            _rubikscube.Interaction.EndTrack();
+            _rubikscube.EndTrack();
         }
 
 
@@ -218,18 +213,20 @@ namespace RubiksCubeSL
                     _previousPosition2D = currentPosition;
                 }
                 else
-                    _rubikscube.Interaction.Track(e.GetPosition(_viewport));
+                    //do twist
+                    _rubikscube.Track(e.GetPosition(_viewport));
             }
             else
             {
-                if (_rubikscube.Interaction.InTrack)
+                if (_rubikscube.InTrack)
                 {
-                    _rubikscube.Interaction.EndTrack();
+                    _rubikscube.EndTrack();
                 }
             }
             
-            HitResult result;
-            bool hit = _rubikscube.HitTest(e.GetPosition(_viewport), false, out result);
+            
+            Tuple<Option<double>, Option<HitResult>> hitTest = _rubikscube.HitTest(e.GetPosition(_viewport), false);
+            bool hit = Option<double>.get_IsSome(hitTest.Item1);
             if (hit)
             {
                 if (this.Cursor != Cursors.Hand)

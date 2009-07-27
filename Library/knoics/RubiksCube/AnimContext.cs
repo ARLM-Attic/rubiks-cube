@@ -15,6 +15,14 @@ namespace Knoics.RubiksCube
 {
     public class AnimContext
     {
+        public AnimContext(double angle, double frames, string op, bool silent, List<Transform> transformParams)
+        {
+            RotatedAngle = angle;
+            Frames = frames;
+            Op = op;
+            Silent = silent;
+            TransformParams = transformParams;
+        }
         public double RotatedAngle { get; set; } 
         public double Frames { get; set; }
         public string Op { get; set; }

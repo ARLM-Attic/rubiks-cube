@@ -5,7 +5,7 @@ using System.Windows;
 
 namespace Knoics.Math
 {
-#if PURECSHARP
+
     public struct Ray3D
     {
         private Point3D origin;
@@ -216,10 +216,10 @@ namespace Knoics.Math
         private Vector3D _normal;
         private double _d;
 
-        public Plane3D(double a, double b, double c, double d)
+        public Plane3D(Vector3D normal, double d)
         {
-            this._normal = new Vector3D(a, b, c);
-            this._normal.Normalize();
+            normal.Normalize();
+            this._normal = normal;
             this._d = d;
         }
 
@@ -248,7 +248,7 @@ namespace Knoics.Math
             }
         }
 
-        public double DistanceToPoint(Point3 point)
+        public double DistanceToPoint(Point3D point)
         {
             return point.X * this._normal.X +
                    point.Y * this._normal.Y +
@@ -476,6 +476,6 @@ namespace Knoics.Math
 
     }
 
-#endif
+
 
 }

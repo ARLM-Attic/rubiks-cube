@@ -14,6 +14,7 @@ using Knoics.Math;
 
 namespace Knoics.RubiksCube
 {
+
     public class CubeOperation
     {
         public const double PiOver2 = System.Math.PI/2;
@@ -77,15 +78,15 @@ namespace Knoics.RubiksCube
 
             _basicOps = new Dictionary<string, BasicOp>(); //corner cubie rotation, edge cubie rotation, center cubie
 
-            _basicOps.Add("U", new BasicOp { Op = "U", CubicleOrientationCycles = new string[][] { new string[] { "ULB", "UBR", "URF", "UFL" }, new string[] { "UB", "UR", "UF", "UL" }, new string[] { "U" } }, Axis = Axis.Y, RotationAngle = -PiOver2 });
-            _basicOps.Add("D", new BasicOp { Op = "D", CubicleOrientationCycles = new string[][] { new string[] { "DLF", "DFR", "DRB", "DBL" }, new string[] { "DF", "DR", "DB", "DL" }, new string[] { "D" } }, Axis = Axis.Y, RotationAngle = PiOver2 });
-            _basicOps.Add("F", new BasicOp { Op = "F", CubicleOrientationCycles = new string[][] { new string[] { "UFL", "RFU", "DFR", "LFD" }, new string[] { "UF", "RF", "DF", "LF" }, new string[] { "F" } }, Axis = Axis.Z, RotationAngle = -PiOver2 });
-            _basicOps.Add("B", new BasicOp { Op = "B", CubicleOrientationCycles = new string[][] { new string[] { "UBR", "LBU", "DBL", "RBD" }, new string[] { "RB", "UB", "LB", "DB" }, new string[] { "B" } }, Axis = Axis.Z, RotationAngle = PiOver2 });
-            _basicOps.Add("L", new BasicOp { Op = "L", CubicleOrientationCycles = new string[][] { new string[] { "ULB", "FLU", "DLF", "BLD" }, new string[] { "UL", "FL", "DL", "BL" }, new string[] { "L" } }, Axis = Axis.X, RotationAngle = PiOver2 });
-            _basicOps.Add("R", new BasicOp { Op = "R", CubicleOrientationCycles = new string[][] { new string[] { "URF", "BRU", "DRB", "FRD" }, new string[] { "UR", "BR", "DR", "FR" }, new string[] { "R" } }, Axis = Axis.X, RotationAngle = -PiOver2 });
-            _basicOps.Add("UM", new BasicOp { Op = "UM", CubicleOrientationCycles = new string[][] { new string[] { }, new string[] { "LB", "BR", "RF", "FL" }, new string[] { "B", "R", "F", "L" } }, Axis = Axis.Y, RotationAngle = -PiOver2 });
-            _basicOps.Add("FM", new BasicOp { Op = "FM", CubicleOrientationCycles = new string[][] { new string[] { }, new string[] { "UR", "RD", "DL", "LU" }, new string[] { "U", "R", "D", "L" } }, Axis = Axis.Z, RotationAngle = -PiOver2 });
-            _basicOps.Add("LM", new BasicOp { Op = "LM", CubicleOrientationCycles = new string[][] { new string[] { }, new string[] { "UF", "FD", "DB", "BU" }, new string[] { "U", "F", "D", "B" } }, Axis = Axis.X, RotationAngle = PiOver2 });
+            _basicOps.Add("U", new BasicOp ("U", new string[][] { new string[] { "ULB", "UBR", "URF", "UFL" }, new string[] { "UB", "UR", "UF", "UL" }, new string[] { "U" } }, Axis.Y, -PiOver2 ));
+            _basicOps.Add("D", new BasicOp ("D", new string[][] { new string[] { "DLF", "DFR", "DRB", "DBL" }, new string[] { "DF", "DR", "DB", "DL" }, new string[] { "D" } }, Axis.Y, PiOver2 ));
+            _basicOps.Add("F", new BasicOp ("F", new string[][] { new string[] { "UFL", "RFU", "DFR", "LFD" }, new string[] { "UF", "RF", "DF", "LF" }, new string[] { "F" } }, Axis.Z, -PiOver2 ));
+            _basicOps.Add("B", new BasicOp ("B", new string[][] { new string[] { "UBR", "LBU", "DBL", "RBD" }, new string[] { "RB", "UB", "LB", "DB" }, new string[] { "B" } }, Axis.Z, PiOver2 ));
+            _basicOps.Add("L", new BasicOp ("L", new string[][] { new string[] { "ULB", "FLU", "DLF", "BLD" }, new string[] { "UL", "FL", "DL", "BL" }, new string[] { "L" } }, Axis.X, PiOver2 ));
+            _basicOps.Add("R", new BasicOp ("R", new string[][] { new string[] { "URF", "BRU", "DRB", "FRD" }, new string[] { "UR", "BR", "DR", "FR" }, new string[] { "R" } }, Axis.X, -PiOver2 ));
+            _basicOps.Add("UM", new BasicOp ("UM", new string[][] { new string[] { }, new string[] { "LB", "BR", "RF", "FL" }, new string[] { "B", "R", "F", "L" } }, Axis.Y, -PiOver2 ));
+            _basicOps.Add("FM", new BasicOp ("FM", new string[][] { new string[] { }, new string[] { "UR", "RD", "DL", "LU" }, new string[] { "U", "R", "D", "L" } }, Axis.Z, -PiOver2 ));
+            _basicOps.Add("LM", new BasicOp ("LM", new string[][] { new string[] { }, new string[] { "UF", "FD", "DB", "BU" }, new string[] { "U", "F", "D", "B" } }, Axis.X, PiOver2 ));
             
             /*
             _basicOps.Add("U", new BasicOp { Op = "U", CubicleGroupCycles = new string[][] { new string[] { CubeConfiguration.GetCubicleName(0, 2, 0), CubeConfiguration.GetCubicleName(2, 2, 0), CubeConfiguration.GetCubicleName(2, 2, 2), CubeConfiguration.GetCubicleName(0, 2, 2) }, new string[] { CubeConfiguration.GetCubicleName(1, 2, 0), CubeConfiguration.GetCubicleName(2, 2, 1), CubeConfiguration.GetCubicleName(1, 2, 2), CubeConfiguration.GetCubicleName(0, 2, 1) }, new string[] { "U" } }, Axis = Axis.Y, RotationAngle = -PiOver2 });
@@ -107,31 +108,31 @@ namespace Knoics.RubiksCube
         public static readonly string FoldOp = "FOLD";
         public static readonly string UnFoldOp = "UNFOLD";
         private static OpFromBasic[] TotalOps = new OpFromBasic[] { 
-            new OpFromBasic(){ Op = "U", BasicOp = "U", RotationDirectionWithAxis = RotationDirection.Clockwise},
-            new OpFromBasic(){ Op = "U'", BasicOp = "U", RotationDirectionWithAxis = RotationDirection.CounterClockWise},
-            new OpFromBasic(){ Op = "D", BasicOp = "D", RotationDirectionWithAxis = RotationDirection.CounterClockWise},
-            new OpFromBasic(){ Op = "D'", BasicOp = "D", RotationDirectionWithAxis = RotationDirection.Clockwise},
-            new OpFromBasic(){ Op = "F", BasicOp = "F", RotationDirectionWithAxis = RotationDirection.Clockwise},
-            new OpFromBasic(){ Op = "F'", BasicOp = "F", RotationDirectionWithAxis = RotationDirection.CounterClockWise},
-            new OpFromBasic(){ Op = "B", BasicOp = "B", RotationDirectionWithAxis = RotationDirection.CounterClockWise},
-            new OpFromBasic(){ Op = "B'", BasicOp = "B", RotationDirectionWithAxis = RotationDirection.Clockwise},
-            new OpFromBasic(){ Op = "L", BasicOp = "L", RotationDirectionWithAxis = RotationDirection.CounterClockWise},
-            new OpFromBasic(){ Op = "L'", BasicOp = "L", RotationDirectionWithAxis = RotationDirection.Clockwise},
-            new OpFromBasic(){ Op = "R", BasicOp = "R", RotationDirectionWithAxis = RotationDirection.Clockwise},
-            new OpFromBasic(){ Op = "R'", BasicOp = "R", RotationDirectionWithAxis = RotationDirection.CounterClockWise},
+            new OpFromBasic("U", "U", RotationDirection.Clockwise),
+            new OpFromBasic("U'", "U", RotationDirection.CounterClockWise),
+            new OpFromBasic( "D", "D", RotationDirection.CounterClockWise),
+            new OpFromBasic( "D'", "D", RotationDirection.Clockwise),
+            new OpFromBasic( "F", "F", RotationDirection.Clockwise),
+            new OpFromBasic( "F'", "F", RotationDirection.CounterClockWise),
+            new OpFromBasic( "B", "B", RotationDirection.CounterClockWise),
+            new OpFromBasic( "B'", "B", RotationDirection.Clockwise),
+            new OpFromBasic( "L", "L", RotationDirection.CounterClockWise),
+            new OpFromBasic( "L'", "L", RotationDirection.Clockwise),
+            new OpFromBasic( "R", "R", RotationDirection.Clockwise),
+            new OpFromBasic( "R'", "R", RotationDirection.CounterClockWise),
 
-            new OpFromBasic(){ Op = "UM", BasicOp = "UM", RotationDirectionWithAxis = RotationDirection.Clockwise},
-            new OpFromBasic(){ Op = "UM'", BasicOp = "UM", RotationDirectionWithAxis = RotationDirection.CounterClockWise},
-            new OpFromBasic(){ Op = "FM", BasicOp = "FM", RotationDirectionWithAxis = RotationDirection.Clockwise},
-            new OpFromBasic(){ Op = "FM'", BasicOp = "FM", RotationDirectionWithAxis = RotationDirection.CounterClockWise},
-            new OpFromBasic(){ Op = "LM", BasicOp = "LM", RotationDirectionWithAxis = RotationDirection.CounterClockWise},
-            new OpFromBasic(){ Op = "LM'", BasicOp = "LM", RotationDirectionWithAxis = RotationDirection.Clockwise},
-            new OpFromBasic(){ Op = "RM", BasicOp = "LM", RotationDirectionWithAxis = RotationDirection.Clockwise},
-            new OpFromBasic(){ Op = "RM'", BasicOp = "LM", RotationDirectionWithAxis = RotationDirection.CounterClockWise},
-            new OpFromBasic(){ Op = "BM", BasicOp = "FM", RotationDirectionWithAxis = RotationDirection.CounterClockWise},
-            new OpFromBasic(){ Op = "BM'", BasicOp = "FM", RotationDirectionWithAxis = RotationDirection.Clockwise},
-            new OpFromBasic(){ Op = "DM", BasicOp = "UM", RotationDirectionWithAxis = RotationDirection.CounterClockWise},
-            new OpFromBasic(){ Op = "DM'", BasicOp = "UM", RotationDirectionWithAxis = RotationDirection.Clockwise}
+            new OpFromBasic( "UM", "UM", RotationDirection.Clockwise),
+            new OpFromBasic( "UM'", "UM", RotationDirection.CounterClockWise),
+            new OpFromBasic( "FM", "FM", RotationDirection.Clockwise),
+            new OpFromBasic( "FM'", "FM", RotationDirection.CounterClockWise),
+            new OpFromBasic( "LM", "LM", RotationDirection.CounterClockWise),
+            new OpFromBasic( "LM'", "LM", RotationDirection.Clockwise),
+            new OpFromBasic( "RM", "LM", RotationDirection.Clockwise),
+            new OpFromBasic( "RM'", "LM", RotationDirection.CounterClockWise),
+            new OpFromBasic( "BM", "FM", RotationDirection.CounterClockWise),
+            new OpFromBasic( "BM'", "FM", RotationDirection.Clockwise),
+            new OpFromBasic( "DM", "UM", RotationDirection.CounterClockWise),
+            new OpFromBasic( "DM'", "UM", RotationDirection.Clockwise)
         };
 
         public static string[] GetRandomOps(int numOp)
@@ -273,4 +274,5 @@ namespace Knoics.RubiksCube
         }
          */
     }
+
 }

@@ -5,7 +5,8 @@ using Kit3D.Windows.Media.Media3D;
 
 namespace Knoics.RubiksCube
 {
-    public class RotatableObject
+
+    public class RotatableObject 
     {
         protected Matrix3D _transform = Matrix3D.Identity;
         private Matrix3D _savedTransform = Matrix3D.Identity;
@@ -43,7 +44,6 @@ namespace Knoics.RubiksCube
 
         public void RotateUnit(Axis axis, double rotation)
         {
-            //Quaternion rotationQ = Quaternion.Identity;
             Matrix3D transform = Matrix3D.Identity;
             switch (axis)
             {
@@ -59,7 +59,7 @@ namespace Knoics.RubiksCube
 
             }
             _axisTransform = _axisTransform * transform;
-            transform = _axisTransform;// Matrix.Invert(_axisTransform);
+            transform = _axisTransform;
             transform.Invert();
             _unitX = Ext3D.Transform(Ext3D.UnitX, transform);
             _unitY = Ext3D.Transform(Ext3D.UnitY, transform);
@@ -83,11 +83,7 @@ namespace Knoics.RubiksCube
                     break;
 
             }
-            //Quaternion.To
-
             Matrix3D matrix = Ext3D.CreateFromQuaternion(rotationQ);
-            //double[,] data = {{matrix.M11, matrix.M12, matrix.M13, matrix.M14},{matrix.M21, matrix.M22, matrix.M23, matrix.M24}, {matrix.M31, matrix.M32, matrix.M33, matrix.M34}, {matrix.M41, matrix.M42, matrix.M43, matrix.M44}};
-            //Matrix<double> m = MatrixModule.of_array2(data);
             if (isFromSaved)
                 _transform = matrix * _savedTransform;
             else
@@ -100,4 +96,5 @@ namespace Knoics.RubiksCube
 
         #endregion
     }
+
 }

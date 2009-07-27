@@ -19,6 +19,7 @@ using Kit3D.Windows.Media.Media3D;
 
 namespace Knoics.RubiksCube
 {
+
     public class CubieFace : ITransform
     {
         //public IMesh       MainMesh { get; set; }
@@ -56,7 +57,7 @@ namespace Knoics.RubiksCube
             double edgeWidth = size * 0.05;
             Size faceSize = new Size(size, size);
 
-            IMesh u = CubeConfiguration.Factory.CreateMesh(face, ConstructVertexes(CubeConfiguration.Faces[name].Normal, center, faceSize, edgeWidth), CubeConfiguration.Faces[name].Color);
+            IMesh u = CubeConfiguration.Factory.CreateMesh(face.Name, ConstructVertexes(CubeConfiguration.Faces[name].Normal, center, faceSize, edgeWidth), CubeConfiguration.Faces[name].Color);
             face._faceMesh = u; face._meshes.Add(u);
 
             Vector3D[] decorCenters = new Vector3D[4];
@@ -96,7 +97,7 @@ namespace Knoics.RubiksCube
             
             for(int i = 0; i<decorCenters.Length; i++)
             {
-                face._meshes.Add(CubeConfiguration.Factory.CreateMesh(face, ConstructVertexes(CubeConfiguration.Faces[name].Normal, decorCenters[i], sizes[i], 0), Colors.Black));
+                face._meshes.Add(CubeConfiguration.Factory.CreateMesh(face.Name, ConstructVertexes(CubeConfiguration.Faces[name].Normal, decorCenters[i], sizes[i], 0), Colors.Black));
             }
             return face;
         }
@@ -177,4 +178,5 @@ namespace Knoics.RubiksCube
             return positions;
         }
     }
+
 }

@@ -14,9 +14,10 @@ using Knoics.Math;
 
 namespace Knoics.RubiksCube
 {
+    
     public interface IMesh : ITransform
     {
-        CubieFace Face { get; }
+        //CubieFace Face { get; }
     }
-
+    
 }
