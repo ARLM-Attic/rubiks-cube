@@ -68,10 +68,6 @@ type Quaternion3D(x:double, y:double, z:double, w:double) =
         let w = (w1 * w2) - w3
         new Quaternion3D(x, y, z, w)
 
-
-
-        
-
 type BoundingBox3D(min:Vector3D, max:Vector3D) as this = 
     let fmin a b =
         if(a>b) then b
@@ -92,11 +88,8 @@ type BoundingBox3D(min:Vector3D, max:Vector3D) as this =
             if(dis > maxValue) then (None, maxValue)
             else (Some(dis), maxValue)
             
-            
     member x.Min = min
     member x.Max = max
-
-
 
     member x.Intersects(ray:Ray3D) = 
         let distancex = intersect(ray.Direction.X, ray.Origin.X, this.Min.X, this.Max.X, double.MaxValue, 0.)

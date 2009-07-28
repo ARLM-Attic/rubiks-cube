@@ -75,6 +75,7 @@
     <Compile Include="RubiksCube\CubicleFace.cs" />
     <Compile Include="RubiksCube\Cubie.cs" />
     <Compile Include="RubiksCube\CubieFace.cs" />
+    <Compile Include="RubiksCube\Factory.cs" />
     <Compile Include="RubiksCube\IFactory.cs" />
     <Compile Include="RubiksCube\IMesh.cs" />
     <Compile Include="RubiksCube\IModel.cs" />

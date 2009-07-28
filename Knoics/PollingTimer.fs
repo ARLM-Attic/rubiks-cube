@@ -7,21 +7,19 @@
 namespace Knoics
 open System
 
-type PollingTimer(inter:int) as this = 
-    [<DefaultValue>] val mutable elapsedTime:int
-    [<DefaultValue>] val mutable lastTime:DateTime 
-    do this.lastTime <- DateTime.Now
+type PollingTimer(inter:int) = 
+    let mutable elapsedTime = 0
+    let mutable lastTime = DateTime.Now
     member x.Interval:int = inter
     member x.OnInterval() = 
         let now = DateTime.Now
-        let elapsed = now - this.lastTime
-        this.lastTime <- now
-        this.elapsedTime <- this.elapsedTime + elapsed.Milliseconds;
-        let onInterval = this.elapsedTime >= this.Interval
+        let elapsed = now - lastTime
+        lastTime <- now
+        elapsedTime <- elapsedTime + elapsed.Milliseconds;
+        let onInterval = elapsedTime >= x.Interval
         if onInterval then 
-            x.elapsedTime <- 0
+            elapsedTime <- 0
         onInterval
-    
     member x.Reset() = 
-        x.elapsedTime <- 0
+        elapsedTime <- 0
         ()
