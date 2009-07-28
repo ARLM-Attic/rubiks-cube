@@ -317,7 +317,7 @@ namespace Knoics.Math
                 Vector3D vectord = vector1 - vector2;
                 num = 2.0 * System.Math.Asin(vectord.Length / 2.0);
             }
-            return Angle.RadiansToDegrees(num);
+            return num;// Angle.RadiansToDegrees(num);
         }
 
 

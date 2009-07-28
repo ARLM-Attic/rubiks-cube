@@ -54,7 +54,7 @@ namespace Knoics.RubiksCube
 
         private Cubicle _cubicle;
         public Cubicle Cubicle { get { return _cubicle; } internal set { _cubicle = value; } }
-        public static Cubie CreateCubie(Cubicle cubicle, string name, Vector3D center, double size)
+        public static Cubie CreateCubie(Cubicle cubicle, string name, Vector3D center, double size, IFactory factory)
         {
             Cubie cubie = new Cubie(cubicle, name, center, size);
             //Debug.WriteLine(name);
@@ -65,7 +65,7 @@ namespace Knoics.RubiksCube
             if (name.IndexOf("U") >= 0)
             {
                 c = center; c.Y += offset;
-                face = CubieFace.ConstructCubieFace(cubie, "U", c, size);
+                face = CubieFace.ConstructCubieFace(cubie, "U", c, size, factory);
                 cubie.Faces.Add("U", face);
                 cubicle.SetCubieFace("U", face);
             }
@@ -73,7 +73,7 @@ namespace Knoics.RubiksCube
             if (name.IndexOf("D") >= 0)
             {
                 c = center; c.Y -= offset;
-                face = CubieFace.ConstructCubieFace(cubie, "D", c, size);
+                face = CubieFace.ConstructCubieFace(cubie, "D", c, size, factory);
                 cubie.Faces.Add("D", face);
                 cubicle.SetCubieFace("D", face);
             }
@@ -81,7 +81,7 @@ namespace Knoics.RubiksCube
             if (name.IndexOf("F") >= 0)
             {
                 c = center; c.Z += offset;
-                face = CubieFace.ConstructCubieFace(cubie, "F", c, size);
+                face = CubieFace.ConstructCubieFace(cubie, "F", c, size, factory);
                 cubie.Faces.Add("F", face);
                 cubicle.SetCubieFace("F", face);
             }
@@ -89,7 +89,7 @@ namespace Knoics.RubiksCube
             if (name.IndexOf("B") >= 0)
             {
                 c = center; c.Z -= offset;
-                face = CubieFace.ConstructCubieFace(cubie, "B", c, size);
+                face = CubieFace.ConstructCubieFace(cubie, "B", c, size, factory);
                 cubie.Faces.Add("B", face);
                 cubicle.SetCubieFace("B", face);
             }
@@ -97,7 +97,7 @@ namespace Knoics.RubiksCube
             if (name.IndexOf("L") >= 0)
             {
                 c = center; c.X -= offset;
-                face = CubieFace.ConstructCubieFace(cubie, "L", c, size);
+                face = CubieFace.ConstructCubieFace(cubie, "L", c, size, factory);
                 cubie.Faces.Add("L", face);
                 cubicle.SetCubieFace("L", face);
             }
@@ -105,7 +105,7 @@ namespace Knoics.RubiksCube
             if (name.IndexOf("R") >= 0)
             {
                 c = center; c.X += offset;
-                face = CubieFace.ConstructCubieFace(cubie, "R", c, size);
+                face = CubieFace.ConstructCubieFace(cubie, "R", c, size, factory);
                 cubie.Faces.Add("R", face);
                 cubicle.SetCubieFace("R", face);
             }

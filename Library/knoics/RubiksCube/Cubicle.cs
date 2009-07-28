@@ -87,10 +87,10 @@ namespace Knoics.RubiksCube
         }
 
 
-        public static Cubicle CreateCubicle(string cubicleName, string cubieName, Vector3D center, double size)
+        public static Cubicle CreateCubicle(string cubicleName, string cubieName, Vector3D center, double size, IFactory factory)
         {
             Cubicle cubicle = new Cubicle(cubicleName, center, size);
-            Cubie cubie = Cubie.CreateCubie(cubicle, cubieName, center, size);
+            Cubie cubie = Cubie.CreateCubie(cubicle, cubieName, center, size, factory);
             cubicle.Cubie = cubie;
 
             return cubicle;

@@ -14,6 +14,8 @@ open System
 
 [<System.Runtime.CompilerServices.Extension>]
 module Methods =
+    type RotateCameraResult = {RotateMatrix:Matrix3D; ViewMatrix:Matrix3D}
+
     let CalculateViewMatrix(position:Point3D, lookDirection:Vector3D, upDirection:Vector3D) =
         let cameraZAxis = -lookDirection
         cameraZAxis.Normalize()
@@ -44,7 +46,7 @@ module Methods =
         this.LookDirection <- Ext3D.Transform(d, m) 
         let up = new Vector3D(this.UpDirection.X, this.UpDirection.Y, this.UpDirection.Z)
         this.UpDirection <- Ext3D.Transform(up, m)
-        (m, CalculateViewMatrix(this.Position, this.LookDirection, this.UpDirection))
+        {RotateMatrix = m;  ViewMatrix = CalculateViewMatrix(this.Position, this.LookDirection, this.UpDirection)}
             
 
     [<System.Runtime.CompilerServices.Extension>]

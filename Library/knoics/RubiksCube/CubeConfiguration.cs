@@ -18,7 +18,6 @@ namespace Knoics.RubiksCube
 
     public class CubeConfiguration
     {
-        public static IFactory Factory { get; set; }
         internal static Dictionary<string, FaceConfig> Faces = new Dictionary<string, FaceConfig>();
 
         static CubeConfiguration()

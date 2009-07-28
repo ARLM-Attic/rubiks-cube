@@ -17,6 +17,7 @@ open Kit3D.Windows.Media.Media3D;
 
 
 
+
 type SelectMode =
     | Cubies
     | Cube
@@ -33,7 +34,9 @@ type HitResult = {
     Distance:double
     }
 
-type RubiksCube(cubieSize:double, cubeSize:CubeSize, model:IModel, boundingBox:BoundingBox3D, oneOpDone:OneOpDone) as this=
+type HitTestResult = {Distance:double option;HitResult:HitResult option}
+
+type RubiksCube(cubieSize:double, cubeSize:CubeSize, boundingBox:BoundingBox3D, oneOpDone:OneOpDone, factory:IFactory) as this=
     inherit RotatableObject()
     let _oneOpDone = oneOpDone
     let mutable _steps:int = 0
@@ -43,9 +46,9 @@ type RubiksCube(cubieSize:double, cubeSize:CubeSize, model:IModel, boundingBox:B
     let _cubicles = new Dictionary<string, Cubicle>()
     let _cubieSize = cubieSize
     let _cubeSize = cubeSize
-    let _model = model
+    let _model = factory.CreateModel()
     let _boundingBox = boundingBox
-    
+    let _factory = factory
         
     let mutable _selectedCubies:IEnumerable<Cubie>  = null
     let _selectedBasicOp:string = string.Empty
@@ -181,7 +184,7 @@ type RubiksCube(cubieSize:double, cubeSize:CubeSize, model:IModel, boundingBox:B
     member x.Animator = _animator
     member x.Unfolded with get() = _unfolded
 
-    static member CreateRubiksCube(origin:Vector3D,cubieNum:int,cubieSize:double, oneOpDone:OneOpDone) =
+    static member CreateRubiksCube(origin:Vector3D,cubieNum:int,cubieSize:double, oneOpDone:OneOpDone, factory:IFactory) =
         let size = new CubeSize(cubieNum, cubieNum, cubieNum )
         let mutable start = origin
         start.X <- start.X - double(size.Width - 1) * cubieSize / 2.
@@ -196,7 +199,7 @@ type RubiksCube(cubieSize:double, cubeSize:CubeSize, model:IModel, boundingBox:B
         max.Y <- max.Y + double(size.Height) * cubieSize / 2.
         max.Z <- max.Z + double(size.Depth) * cubieSize / 2.
         let boundingBox = new BoundingBox3D(min, max)
-        let rubiksCube = new RubiksCube(cubieSize, size, CubeConfiguration.Factory.Value.CreateModel(), boundingBox, oneOpDone)
+        let rubiksCube = new RubiksCube(cubieSize, size, boundingBox, oneOpDone, factory)
         
         for i = 0 to size.Width - 1 do
             for j = 0 to size.Height - 1 do
@@ -209,7 +212,7 @@ type RubiksCube(cubieSize:double, cubeSize:CubeSize, model:IModel, boundingBox:B
                     //Debug.WriteLine(string.Format("({0},{1},{2}): {3}", i,j,k, cubicleName));
                     if (string.IsNullOrEmpty(cubicleName)=false)then
                         let cubieName = cubicleName //solved configuration
-                        let cubicle = Cubicle.CreateCubicle(cubicleName, cubieName, cubieOri, cubieSize)
+                        let cubicle = Cubicle.CreateCubicle(cubicleName, cubieName, cubieOri, cubieSize, factory)
                         rubiksCube.Cubicles.Add(cubicleName, cubicle)
         rubiksCube
     
@@ -293,7 +296,7 @@ type RubiksCube(cubieSize:double, cubeSize:CubeSize, model:IModel, boundingBox:B
         CubeConfiguration.Faces.Keys |> Seq.exists( fun face -> (x.IsFaceSoved(face)=false) ) = false
 
 
-
+    
     /// <summary>
     /// Only if deep is true, then HitCubieResult could have some value
     /// </summary>
@@ -329,20 +332,26 @@ type RubiksCube(cubieSize:double, cubeSize:CubeSize, model:IModel, boundingBox:B
                 if (results.Count > 0)then
                     hitResult <- Some results.[0]
         //d has some thing: true
-        (d, hitResult)
+        //(d, hitResult)
+        {Distance=d;HitResult = hitResult}
 
+    member x.HitTestOnly(pt:Point, deep:bool)=
+        let hitTest = x.HitTest(pt, deep)
+        Option.isSome(hitTest.Distance)
+    
     member x.TestAngle(pt:Point, prevHit:HitResult)=
         let hitTest = x.HitTest(pt, true)
-        let hit = Option.isSome(fst hitTest)
-        let hitResult = snd hitTest
+        let hit = Option.isSome(hitTest.Distance)
+        
         let mutable angle:double option = None
         let mutable axis = Axis.X
         if (hit) then
+            let hitResult = hitTest.HitResult.Value// snd hitTest
             angle <- Some 0.0
             axis <- Axis.Z
             let oxy = new Point3D(0., 0., prevHit.HitPoint.Z)
             let mutable fromV = prevHit.HitPoint - oxy
-            let mutable toV = new Point3D(hitResult.Value.HitPoint.X, hitResult.Value.HitPoint.Y, prevHit.HitPoint.Z) - oxy
+            let mutable toV = new Point3D(hitResult.HitPoint.X, hitResult.HitPoint.Y, prevHit.HitPoint.Z) - oxy
             let xyAngle = Ext3D.AngleBetween(fromV, toV)
              
             angle <- Some xyAngle
@@ -353,7 +362,7 @@ type RubiksCube(cubieSize:double, cubeSize:CubeSize, model:IModel, boundingBox:B
             //plane yz, where x = prevHit.X, Axis.X
             let oyz = new Point3D(prevHit.HitPoint.X, 0., 0.)
             fromV <- prevHit.HitPoint - oyz
-            toV <- new Point3D(prevHit.HitPoint.X, hitResult.Value.HitPoint.Y, hitResult.Value.HitPoint.Z) - oyz
+            toV <- new Point3D(prevHit.HitPoint.X, hitResult.HitPoint.Y, hitResult.HitPoint.Z) - oyz
             let yzAngle = Ext3D.AngleBetween(fromV, toV)
             if (System.Math.Abs(yzAngle) > System.Math.Abs(angle.Value))then
                 angle <- Some yzAngle
@@ -364,7 +373,7 @@ type RubiksCube(cubieSize:double, cubeSize:CubeSize, model:IModel, boundingBox:B
             //plane zx, where y = prevHit.Y, Axis.Y
             let ozx = new Point3D(0., prevHit.HitPoint.Y, 0.)
             fromV <- prevHit.HitPoint - ozx
-            toV <- new Point3D(hitResult.Value.HitPoint.X, prevHit.HitPoint.Y, hitResult.Value.HitPoint.Z) - ozx
+            toV <- new Point3D(hitResult.HitPoint.X, prevHit.HitPoint.Y, hitResult.HitPoint.Z) - ozx
             let zxAngle = Ext3D.AngleBetween(fromV, toV)
             if (System.Math.Abs(zxAngle) > System.Math.Abs(angle.Value)) then
                 angle <- Some zxAngle
@@ -465,8 +474,8 @@ type RubiksCube(cubieSize:double, cubeSize:CubeSize, model:IModel, boundingBox:B
 
         if (x.NoOp && Option.isNone(_prevHit)) then
             let hitTest = x.HitTest(pt, true)
-            let hit = Option.isSome(fst hitTest)
-            let result = snd hitTest
+            let hit = Option.isSome(hitTest.Distance)
+            let result = hitTest.HitResult// snd hitTest
             if (hit && Option.isSome(result)) then
                 _prevHit <- result
                 _angle <- None

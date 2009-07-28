@@ -21,7 +21,7 @@ using Knoics.Math;
 
 namespace Knoics.RubiksCube
 {
-    class Factory : IFactory
+    public class Factory : IFactory
     {
         #region IMeshFactory Members
         public IMesh CreateMesh(string faceName, Vector3D[] vertexes, Color color)
@@ -37,7 +37,7 @@ namespace Knoics.RubiksCube
 
     }
 
-    class CubeModel : IModel
+    public class CubeModel : IModel
     {
         #region IModel Members
         private readonly ModelVisual3D _visualModel;
@@ -89,7 +89,7 @@ namespace Knoics.RubiksCube
         #endregion
     }
 
-    class CubieMesh : IMesh
+    public class CubieMesh : IMesh
     {
         private readonly GeometryModel3D _geometry;
         private readonly MeshGeometry3D _mesh;

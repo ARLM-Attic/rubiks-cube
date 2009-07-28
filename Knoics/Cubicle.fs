@@ -104,10 +104,10 @@ type CubieFace (cubie:Cubie , name:string , center:Vector3D , size:double, faceM
             positions.[3] <- vertex;// .Add(vertex);
             positions
         |_  -> positions    
-    static member ConstructCubieFace(cubie:Cubie , name:string , center:Vector3D , size:double )=
+    static member ConstructCubieFace(cubie:Cubie , name:string , center:Vector3D , size:double, factory:IFactory )=
         let faceSize = new Size(size, size)
         let edgeWidth = size * 0.05
-        let u = CubeConfiguration.Factory.Value.CreateMesh(name, CubieFace.ConstructVertexes(CubeConfiguration.Faces.[name].Normal, center, faceSize, edgeWidth), CubeConfiguration.Faces.[name].Color)
+        let u = factory.CreateMesh(name, CubieFace.ConstructVertexes(CubeConfiguration.Faces.[name].Normal, center, faceSize, edgeWidth), CubeConfiguration.Faces.[name].Color)
         let face = new CubieFace(cubie, name, center, size, u, None)
         face.Meshes.Add(u)
 
@@ -174,7 +174,7 @@ type CubieFace (cubie:Cubie , name:string , center:Vector3D , size:double, faceM
 
         
         for i = 0 to decorCenters.Length-1 do
-            face.Meshes.Add(CubeConfiguration.Factory.Value.CreateMesh(face.Name, CubieFace.ConstructVertexes(CubeConfiguration.Faces.[name].Normal, decorCenters.[i], sizes.[i], 0.), Colors.Black))
+            face.Meshes.Add(factory.CreateMesh(face.Name, CubieFace.ConstructVertexes(CubeConfiguration.Faces.[name].Normal, decorCenters.[i], sizes.[i], 0.), Colors.Black))
         face
     
 
@@ -214,47 +214,47 @@ and Cubie(cubicle:Cubicle, name:string, center:Vector3D, size:double) =
             new BoundingBox3D(min, max)
 
 
-    static member CreateCubie(cubicle:Cubicle, name:string , center:Vector3D , size:double )=
+    static member CreateCubie(cubicle:Cubicle, name:string , center:Vector3D , size:double, factory:IFactory )=
         let cubie = new Cubie(cubicle, name, center, size)
         let mutable c = center
         let offset = size /2.
         if (name.IndexOf("U") >= 0)then
             c <- center
             c.Y <- c.Y + offset
-            let face = CubieFace.ConstructCubieFace(cubie, "U", c, size);
+            let face = CubieFace.ConstructCubieFace(cubie, "U", c, size, factory);
             cubie.Faces.Add("U", face)
             cubicle.SetCubieFace("U", face)
 
         if (name.IndexOf("D") >= 0)then
             c <- center
             c.Y <- c.Y-offset
-            let face = CubieFace.ConstructCubieFace(cubie, "D", c, size)
+            let face = CubieFace.ConstructCubieFace(cubie, "D", c, size, factory)
             cubie.Faces.Add("D", face)
             cubicle.SetCubieFace("D", face)
 
         if (name.IndexOf("F") >= 0) then
             c <- center
             c.Z <- c.Z + offset
-            let face = CubieFace.ConstructCubieFace(cubie, "F", c, size)
+            let face = CubieFace.ConstructCubieFace(cubie, "F", c, size, factory)
             cubie.Faces.Add("F", face)
             cubicle.SetCubieFace("F", face);
 
         if (name.IndexOf("B") >= 0) then
             c <- center
             c.Z <- c.Z-offset
-            let face = CubieFace.ConstructCubieFace(cubie, "B", c, size)
+            let face = CubieFace.ConstructCubieFace(cubie, "B", c, size, factory)
             cubie.Faces.Add("B", face)
             cubicle.SetCubieFace("B", face)
         if (name.IndexOf("L") >= 0)then
             c <- center
             c.X <- c.X - offset
-            let face = CubieFace.ConstructCubieFace(cubie, "L", c, size)
+            let face = CubieFace.ConstructCubieFace(cubie, "L", c, size, factory)
             cubie.Faces.Add("L", face)
             cubicle.SetCubieFace("L", face)
         if (name.IndexOf("R") >= 0) then
             c <- center
             c.X <- c.X + offset
-            let face = CubieFace.ConstructCubieFace(cubie, "R", c, size)
+            let face = CubieFace.ConstructCubieFace(cubie, "R", c, size, factory)
             cubie.Faces.Add("R", face)
             cubicle.SetCubieFace("R", face)
         cubie
@@ -363,9 +363,9 @@ and Cubicle(name:string, center:Vector3D, size:double, cubie:Cubie option) as th
 
 
 
-    static member CreateCubicle(cubicleName:string, cubieName:string, center:Vector3D , size:double ) =
+    static member CreateCubicle(cubicleName:string, cubieName:string, center:Vector3D , size:double, factory:IFactory ) =
         let cubicle = new Cubicle(cubicleName, center, size, None)
-        let cubie = Cubie.CreateCubie(cubicle, cubieName, center, size)
+        let cubie = Cubie.CreateCubie(cubicle, cubieName, center, size, factory)
         cubicle.Cubie <- Some(cubie)
         cubicle
 

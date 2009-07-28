@@ -19,12 +19,9 @@ type CubeConfiguration() =
     static do faces.Add("B", new FaceConfig(Colors.White, "B", Axis.Z ))
     static do faces.Add("F", new FaceConfig(Colors.Yellow, "F", Axis.Z ))
     
-    static let mutable _factory:IFactory option = None
+    
     
     static member Faces = faces
-    static member Factory 
-                with get() = _factory
-                and set v = _factory <- v
     
 
     //x--0:Left     Width-1 :Right

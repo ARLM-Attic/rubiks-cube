@@ -25,7 +25,7 @@ using Kit3D.Windows.Media;
 
 using Kit3D.Math;
 using System.Diagnostics;
-using Microsoft.FSharp.Core;
+
 
 namespace RubiksCubeSL
 {
@@ -117,8 +117,7 @@ namespace RubiksCubeSL
             viewport.VerticalAlignment = VerticalAlignment.Stretch;
             
             
-            CubeConfiguration.Factory =new Option<IFactory>(new Factory());
-            _rubikscube = RubiksCube.CreateRubiksCube(new Vector3D(), 3, 10, RubiksCube_OneOpDone);
+            _rubikscube = RubiksCube.CreateRubiksCube(new Vector3D(), 3, 10, RubiksCube_OneOpDone, new Factory());
             ModelVisual3D model = ((CubeModel)_rubikscube.Model).ModelVisual;
             viewport.Children.Add(model);
 
@@ -200,7 +199,7 @@ namespace RubiksCubeSL
         }
 
 
-        
+        static int debug = 0;
         private void UserControl_MouseMove(object sender, MouseEventArgs e)
         {
             if (_isLeftButtonPressed)
@@ -211,6 +210,7 @@ namespace RubiksCubeSL
                     Point currentPosition = e.GetPosition(_viewport);
                     Track(currentPosition);
                     _previousPosition2D = currentPosition;
+
                 }
                 else
                     //do twist
@@ -223,10 +223,8 @@ namespace RubiksCubeSL
                     _rubikscube.EndTrack();
                 }
             }
-            
-            
-            Tuple<Option<double>, Option<HitResult>> hitTest = _rubikscube.HitTest(e.GetPosition(_viewport), false);
-            bool hit = Option<double>.get_IsSome(hitTest.Item1);
+
+            bool hit = _rubikscube.HitTestOnly(e.GetPosition(_viewport), false);
             if (hit)
             {
                 if (this.Cursor != Cursors.Hand)
@@ -247,12 +245,13 @@ namespace RubiksCubeSL
             _camera.UpDirection = new Vector3D(0, 1, 0);
             _camera.FieldOfView = 80;
 
-            _cameraRotate =  _camera.RotateCamera(new Vector3D(0, 1, 0), Math.PI / 6).Item1;
+            Matrix3D vm = Matrix3D.Identity;
+            _cameraRotate =  _camera.RotateCamera(new Vector3D(0, 1, 0), Math.PI / 6).RotateMatrix;
             Vector3D axis = new Vector3D(1, 0, 0); axis = Ext3D.Transform(axis, _cameraRotate);
             
-            Tuple<Matrix3D, Matrix3D> rotate = _camera.RotateCamera(axis, -Math.PI / 6);
-            _cameraRotate *= rotate.Item1;
-            _viewMatrix = rotate.Item2;
+           Methods.RotateCameraResult rcr = _camera.RotateCamera(axis, -Math.PI / 6);
+            _cameraRotate *=  rcr.RotateMatrix;
+            _viewMatrix = rcr.ViewMatrix;
 
         }
         void ResetUI()
@@ -303,10 +302,9 @@ namespace RubiksCubeSL
             Vector3D axis = Vector3D.CrossProduct(_previousPosition3D, currentPosition3D);
             double angle = Ext3D.AngleBetween(_previousPosition3D, currentPosition3D);
             axis = Ext3D.Transform(axis, _cameraRotate);
-            Tuple<Matrix3D, Matrix3D> m = _camera.RotateCamera(axis, -angle);
-            _cameraRotate *= m.Item1;
-            _viewMatrix = m.Item2;
-
+            Methods.RotateCameraResult rcr = _camera.RotateCamera(axis, -angle);
+            _cameraRotate *= rcr.RotateMatrix;
+            _viewMatrix = rcr.ViewMatrix;
             OnLayoutUpdated();
             _previousPosition3D = currentPosition3D;
         }

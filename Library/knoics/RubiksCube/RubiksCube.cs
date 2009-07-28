@@ -68,9 +68,9 @@ namespace Knoics.RubiksCube
                 _steps++;
                 _sequence = _sequence + op;
             }
-            if (OneOpDone != null)
+            if (_oneOpDone != null)
             {
-                OneOpDone(op, _sequence, _steps, isSolved);
+                _oneOpDone(op, _sequence, _steps, isSolved);
             }
         }
 
@@ -222,13 +222,13 @@ namespace Knoics.RubiksCube
             #endregion
         }
 
-        public static RubiksCube CreateRubiksCube(Vector3D origin, int cubieNum, double cubieSize)
+        public static RubiksCube CreateRubiksCube(Vector3D origin, int cubieNum, double cubieSize, OneOpDone oneOpDone, IFactory factory)
         {
             //if(cubieNum!=3) throw new ArgumentException("Invalid CubieNum");
             RubiksCube rubiksCube = new RubiksCube();
             rubiksCube.CubieSize = cubieSize;
-            rubiksCube._model = CubeConfiguration.Factory.CreateModel();
-            
+            rubiksCube._model = factory.CreateModel();
+            rubiksCube._oneOpDone = oneOpDone;
             CubeSize size = new CubeSize(cubieNum, cubieNum, cubieNum );
             rubiksCube.CubeSize = size;
             Vector3D start = origin;
@@ -254,7 +254,7 @@ namespace Knoics.RubiksCube
                             if (!string.IsNullOrEmpty(cubicleName))
                             {
                                 string cubieName = cubicleName; //solved configuration
-                                Cubicle cubicle = Cubicle.CreateCubicle(cubicleName, cubieName, cubieOri, cubieSize);
+                                Cubicle cubicle = Cubicle.CreateCubicle(cubicleName, cubieName, cubieOri, cubieSize, factory);
                                 rubiksCube._cubicles.Add(cubicleName, cubicle);
                             }
                         }
@@ -431,27 +431,27 @@ namespace Knoics.RubiksCube
             double? d = this.BoundingBox.Intersects(ray);
             if (!deep)
             {
-                if (d!=null)
+                if (d != null)
                 {
                     //Debug.WriteLine(string.Format("first ray: {0}, distance:{1}", ray, (double)d));
-                    hitResult = new HitResult() { Distance = d.Value, HitCubicle = null, HitPoint = ray.Origin + d.Value * ray.Direction };
+                    hitResult = new HitResult() { Distance = (double)d, HitCubicle = null, HitPoint = ray.Origin + (double)d * ray.Direction };
                 }
             }
             else
             {
                 List<HitResult> results = new List<HitResult>();
-                if (d!=null)
+                if (d != null)
                 {
-                    //double? d1;
+                    double? d1;
                     foreach (Cubicle cubicle in _cubicles.Values)
                     {
                         Matrix3D localToWorld = _model.Transform; localToWorld.Invert();// *cubicle.Cubie.Transform;
                         ray = Ext3D.Unproject(pt, _viewpoint, localToWorld, _inverseViewMatrix, _inverseProjectionMatrix);
                         //d1 = cubicle.Cubie.BoundingBox.Intersects(ray);
-                        double? d1 = cubicle.BoundingBox.Intersects(ray);
-                        if (d1!=null)
+                        d1 = cubicle.BoundingBox.Intersects(ray);
+                        if (d1 != null)
                         {
-                            HitResult result = new HitResult() { Distance = d1.Value, HitCubicle = cubicle, HitPoint = ray.Origin + d1.Value * ray.Direction };
+                            HitResult result = new HitResult() { Distance = (double)d1, HitCubicle = cubicle, HitPoint = ray.Origin + (double)d1 * ray.Direction };
                             results.Add(result);
                         }
                     }
@@ -460,9 +460,15 @@ namespace Knoics.RubiksCube
                         hitResult = results[0];
                 }
             }
-            return d!=null;
+            return d != null;
         }
 
+
+        public bool HitTestOnly(Point pt, bool deep)
+        {
+            HitResult hitResult;
+            return HitTest(pt, deep, out hitResult);
+        }
         public double? TestAngle(Point pt, HitResult prevHit, out Axis axis)
         {
             HitResult hitResult;
@@ -540,30 +546,30 @@ namespace Knoics.RubiksCube
             switch (axis)
             {
                 case Axis.X:
-                    Vector3D v = new Vector3D(-1, 0, 0);
-                    Plane3D yz = new Plane3D(v, prevHit.HitPoint.X); Point3D oyz = new Point3D(prevHit.HitPoint.X, 0, 0);
-                    Point3D pyz;
-                    yz.Intersect(ray, out pyz); Vector3D from = prevHit.HitPoint - oyz; Vector3D to = pyz - oyz;
+                    Plane3D yz = new Plane3D(new Vector3D(-1, 0, 0), prevHit.HitPoint.X); Point3D oyz = new Point3D(prevHit.HitPoint.X, 0, 0);
+                    Point3D pyz; yz.Intersect(ray, out pyz); Vector3D from = prevHit.HitPoint - oyz; Vector3D to = pyz - oyz;
+
+
                     angle =  Ext3D.AngleBetween(from, to);
                     if (Vector3D.DotProduct(Ext3D.UnitX, Vector3D.CrossProduct(from, to)) < 0)
                         angle = -angle;
 
                     break;
                 case Axis.Z:
-                    v = new Vector3D(0, 0, -1);
-                    Plane3D xy = new Plane3D(v, prevHit.HitPoint.Z); Point3D oxy = new Point3D(0, 0, prevHit.HitPoint.Z);
-                    Point3D pxy;
-                    xy.Intersect(ray, out pxy); from = prevHit.HitPoint - oxy; to = pxy - oxy;
+                    Plane3D xy = new Plane3D(new Vector3D(0, 0, -1), prevHit.HitPoint.Z); Point3D oxy = new Point3D(0, 0, prevHit.HitPoint.Z);
+                    Point3D pxy; xy.Intersect(ray, out pxy); from = prevHit.HitPoint - oxy; to = pxy - oxy;
+
+
                     angle = Ext3D.AngleBetween(from, to);
                     if (Vector3D.DotProduct(Ext3D.UnitZ, Vector3D.CrossProduct(from, to)) < 0)
                         angle = -angle;
 
                     break;
                 case Axis.Y:
-                    v = new Vector3D(0, -1, 0);
-                    Plane3D zx = new Plane3D(v, prevHit.HitPoint.Y); Point3D ozx = new Point3D(0, prevHit.HitPoint.Y, 0);
-                    Point3D pzx;
-                    zx.Intersect(ray, out pzx); from = prevHit.HitPoint - ozx; to = pzx - ozx;
+                    Plane3D zx = new Plane3D(new Vector3D(0, -1, 0), prevHit.HitPoint.Y); Point3D ozx = new Point3D(0, prevHit.HitPoint.Y, 0);
+                    Point3D pzx; zx.Intersect(ray, out pzx); from = prevHit.HitPoint - ozx; to = pzx - ozx;
+
+
                     angle = Ext3D.AngleBetween(from, to);
                     if (Vector3D.DotProduct(Ext3D.UnitY, Vector3D.CrossProduct(from, to)) < 0)
                         angle = -angle;
@@ -607,7 +613,7 @@ namespace Knoics.RubiksCube
         private Animator _animator;
         public IEnumerable<Cubie> SelectedCubies { get; set; }
         public string SelectedBasicOp { get; set; }
-        public OneOpDone OneOpDone;
+        private OneOpDone _oneOpDone;
 
         public Animator Animator { get { return _animator; } }
         private int _steps;

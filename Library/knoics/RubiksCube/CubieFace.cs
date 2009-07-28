@@ -51,13 +51,13 @@ namespace Knoics.RubiksCube
             _cubie = cubie;
         }
 
-        public static CubieFace ConstructCubieFace(Cubie cubie, string name, Vector3D center, double size)
+        public static CubieFace ConstructCubieFace(Cubie cubie, string name, Vector3D center, double size, IFactory factory)
         {
             CubieFace face = new CubieFace(cubie, name, center, size);
             double edgeWidth = size * 0.05;
             Size faceSize = new Size(size, size);
 
-            IMesh u = CubeConfiguration.Factory.CreateMesh(face.Name, ConstructVertexes(CubeConfiguration.Faces[name].Normal, center, faceSize, edgeWidth), CubeConfiguration.Faces[name].Color);
+            IMesh u = factory.CreateMesh(face.Name, ConstructVertexes(CubeConfiguration.Faces[name].Normal, center, faceSize, edgeWidth), CubeConfiguration.Faces[name].Color);
             face._faceMesh = u; face._meshes.Add(u);
 
             Vector3D[] decorCenters = new Vector3D[4];
@@ -97,7 +97,7 @@ namespace Knoics.RubiksCube
             
             for(int i = 0; i<decorCenters.Length; i++)
             {
-                face._meshes.Add(CubeConfiguration.Factory.CreateMesh(face.Name, ConstructVertexes(CubeConfiguration.Faces[name].Normal, decorCenters[i], sizes[i], 0), Colors.Black));
+                face._meshes.Add(factory.CreateMesh(face.Name, ConstructVertexes(CubeConfiguration.Faces[name].Normal, decorCenters[i], sizes[i], 0), Colors.Black));
             }
             return face;
         }

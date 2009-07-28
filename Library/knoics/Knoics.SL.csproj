@@ -79,6 +79,8 @@
     <Compile Include="RubiksCube\IFactory.cs" />
     <Compile Include="RubiksCube\IMesh.cs" />
     <Compile Include="RubiksCube\IModel.cs" />
+    <Compile Include="RubiksCube\Methods.cs" />
+    <Compile Include="RubiksCube\PollingTimer.cs" />
     <Compile Include="RubiksCube\RotatableObject.cs" />
     <Compile Include="RubiksCube\ITransform.cs" />
     <Compile Include="RubiksCube\RotationDirection.cs" />
